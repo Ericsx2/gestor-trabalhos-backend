@@ -9,6 +9,6 @@ app.use(express.json());
 app.use(cors());
 app.use('/students', studentRouter);
 app.use('/teachers', teacherRouter);
-app.use('/coordenation', teacherRouter);
+app.use('/coordenation', coordenationRouter);
 
 export default app;
