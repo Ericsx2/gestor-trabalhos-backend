@@ -19,8 +19,8 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.13",
     "@types/bcrypt": "^5.0.0",
+    "@types/cors": "^2.8.13",
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.1",
@@ -29,5 +29,7 @@
     "ts-node-dev": "^2.0.0",
     "tsup": "^6.7.0",
     "typescript": "^5.0.3"
-  }
+  },
+  "author": "",
+  "description": ""
 }
