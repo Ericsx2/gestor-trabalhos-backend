@@ -56,7 +56,6 @@ model Coordenation {
   phone        String   @db.VarChar(9)
   ddd          String   @db.VarChar(2)
   password     String
-  registration String   @db.VarChar(10)
   created_at   DateTime @default(now())
   deleted      Boolean  @default(false)
   role         Int      @default(2)
