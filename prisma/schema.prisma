@@ -38,6 +38,16 @@ model Teacher {
   @@map("teachers")
 }
 
+model Subject {
+  id         String   @id @default(uuid())
+  name       String   @db.VarChar(50)
+  code       String
+  created_at DateTime @default(now())
+  deleted    Boolean  @default(false)
+
+  @@map("subjects")
+}
+
 model Coordenation {
   id           String   @id @default(uuid())
   name         String   @db.VarChar(50)
