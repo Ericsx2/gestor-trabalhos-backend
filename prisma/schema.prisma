@@ -38,7 +38,6 @@ model Teacher {
   @@map("teachers")
 }
 
-
 model Subject {
   id         String   @id @default(uuid())
   name       String   @db.VarChar(50)
@@ -47,4 +46,20 @@ model Subject {
   deleted    Boolean  @default(false)
 
   @@map("subjects")
+}
+
+model Coordenation {
+  id           String   @id @default(uuid())
+  name         String   @db.VarChar(50)
+  last_name    String   @db.VarChar(100)
+  email        String   @db.VarChar(200)
+  phone        String   @db.VarChar(9)
+  ddd          String   @db.VarChar(2)
+  password     String
+  registration String   @db.VarChar(10)
+  created_at   DateTime @default(now())
+  deleted      Boolean  @default(false)
+  role         Int      @default(2)
+
+  @@map("coordenation")
 }
