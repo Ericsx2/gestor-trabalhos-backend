@@ -11,11 +11,11 @@ class CoordenationController {
       },
     });
 
-    return response.send(coordenations);
+    return response.send(coordenations);  
   }
 
   async store(request: Request, response: Response) {
-    const { name, last_name, registration, email , phone, ddd} = request.body;
+    const { name, last_name, email, phone, ddd } = request.body;
 
     const nameAlreadyExists = await prismaClient.coordenation.findFirst({
       where: {
@@ -38,13 +38,13 @@ class CoordenationController {
     }
 
     const phoneAlreadyExists = await prismaClient.coordenation.findFirst({
-      where:{
+      where: {
         phone,
       },
     });
 
-    if(phoneAlreadyExists){
-      return response.status(302).send({ message: 'Telefone já existente!'});
+    if (phoneAlreadyExists) {
+      return response.status(302).send({ message: 'Telefone já existente!' });
     }
 
     const salt = genSaltSync(10);
@@ -62,7 +62,6 @@ class CoordenationController {
         last_name,
         phone,
         ddd,
-        registration,
         password: hashedPassword,
       },
     });
@@ -89,13 +88,13 @@ class CoordenationController {
       email: coordenation.email,
       phone: coordenation.phone,
       ddd: coordenation.ddd,
-      role: coordenation.role,
+      role: coordenation.role
     });
   }
 
   async update(request: Request, response: Response) {
     const { id } = request.params;
-    const { name, last_name, registration, email, phone, ddd } = request.body;
+    const { name, last_name, email, phone, ddd } = request.body;
 
     const coordenation = await prismaClient.coordenation.findFirst({
       where: {
@@ -114,7 +113,6 @@ class CoordenationController {
         last_name,
         phone,
         ddd,
-        registration,
       },
       where: {
         id,
