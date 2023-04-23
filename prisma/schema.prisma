@@ -40,15 +40,6 @@ model Teacher {
   @@map("teachers")
 }
 
-model Matter {
-  id           String   @id @default(uuid())
-  name         String   @db.VarChar(50)
-  created_at   DateTime @default(now())
-  project      Project?
-  
-  @@map("matters")
-}
-
 model Project {
   id           String   @id @default(uuid())
   title        String   @db.VarChar(255)
