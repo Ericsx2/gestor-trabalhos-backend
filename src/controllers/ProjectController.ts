@@ -1,7 +1,5 @@
 import { Request, Response } from 'express';
 import { prismaClient } from '../database/prismaClient';
-import { generate } from 'generate-password';
-import { hashSync, genSaltSync } from 'bcrypt';
 
 class ProjectController {
   async index(_: Request, response: Response) {
@@ -11,8 +9,8 @@ class ProjectController {
   }
 
   async store(request: Request, response: Response) {
-    const { title, description, registration_teatcher, matter_name, registration_student } = request.body;
-
+    const { title, description, registration_teatcher, registration_student } =
+      request.body;
 
     const titleAlreadyExists = await prismaClient.project.findFirst({
       where: {
@@ -40,8 +38,10 @@ class ProjectController {
       },
     });
 
-    if(!student){
-      return response.status(404).json({ 'message':'Aluno não foi encontrado!'});
+    if (!student) {
+      return response
+        .status(404)
+        .json({ message: 'Aluno não foi encontrado!' });
     }
 
     const teatcher = await prismaClient.teacher.findFirst({
@@ -50,18 +50,10 @@ class ProjectController {
       },
     });
 
-    if(!teatcher){
-      return response.status(404).json({ 'message':'Professor não foi encontrado!'});
-    }
-
-    const matter = await prismaClient.matter.findFirst({
-      where: {
-        name: matter_name,
-      },
-    });
-
-    if(!matter){
-      return response.status(404).json({ 'message':'Matéria não foi encontrada!'});
+    if (!teatcher) {
+      return response
+        .status(404)
+        .json({ message: 'Professor não foi encontrado!' });
     }
 
     const project = await prismaClient.project.create({
@@ -70,11 +62,8 @@ class ProjectController {
         description,
         studentId: student.id,
         teacherId: teatcher.id,
-        matterId: matter.id,
       },
     });
-
-    
 
     return response.send({ message: 'Projeto criado com sucesso' });
   }
@@ -100,8 +89,8 @@ class ProjectController {
 
   async update(request: Request, response: Response) {
     const { id } = request.params;
-    const { title, description, registration_teatcher, matter_name, registration_student } = request.body;
-
+    const { title, description, registration_teatcher, registration_student } =
+      request.body;
 
     const titleAlreadyExists = await prismaClient.project.findFirst({
       where: {
@@ -121,8 +110,10 @@ class ProjectController {
       },
     });
 
-    if(!student){
-      return response.status(404).json({ 'message':'Aluno não foi encontrado!'});
+    if (!student) {
+      return response
+        .status(404)
+        .json({ message: 'Aluno não foi encontrado!' });
     }
 
     const teatcher = await prismaClient.teacher.findFirst({
@@ -131,18 +122,10 @@ class ProjectController {
       },
     });
 
-    if(!teatcher){
-      return response.status(404).json({ 'message':'Professor não foi encontrado!'});
-    }
-
-    const matter = await prismaClient.matter.findFirst({
-      where: {
-        name: matter_name,
-      },
-    });
-
-    if(!matter){
-      return response.status(404).json({ 'message':'Matéria não foi encontrada!'});
+    if (!teatcher) {
+      return response
+        .status(404)
+        .json({ message: 'Professor não foi encontrado!' });
     }
 
     const project = await prismaClient.project.update({
@@ -151,13 +134,11 @@ class ProjectController {
         description,
         studentId: student.id,
         teacherId: teatcher.id,
-        matterId: matter.id,
       },
       where: {
-        id
-      }
+        id,
+      },
     });
-
 
     return response.send({ message: 'Projeto alterado com sucesso' });
   }
@@ -171,12 +152,12 @@ class ProjectController {
       },
     });
 
-    return response.status(200).json({ message: 'Projeto deletado com sucesso' });
+    return response
+      .status(200)
+      .json({ message: 'Projeto deletado com sucesso' });
   }
 
-  async upload(request: Request, response: Response){
-    
-  }
+  async upload(request: Request, response: Response) {}
 }
 
 export { ProjectController };

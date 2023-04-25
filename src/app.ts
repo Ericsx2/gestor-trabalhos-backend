@@ -2,7 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 
-import { studentRouter, teacherRouter, coordenationRouter, subjectRouter, projectRouter } from './routes';
+import {
+  studentRouter,
+  teacherRouter,
+  coordenationRouter,
+  subjectRouter,
+  projectRouter,
+} from './routes';
 
 const app = express();
 app.use(express.json());
