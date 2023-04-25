@@ -83,6 +83,7 @@ class StudentController {
     const { id } = request.params;
     const { name, last_name, registration, email } = request.body;
 
+
     const student = await prismaClient.student.findFirst({
       where: {
         id,

@@ -20,6 +20,7 @@ model Student {
   created_at   DateTime @default(now())
   deleted      Boolean  @default(false)
   role         Int      @default(1)
+  projects     Project[]
 
   @@map("students")
 }
@@ -34,8 +35,26 @@ model Teacher {
   created_at   DateTime @default(now())
   deleted      Boolean  @default(false)
   role         Int      @default(2)
+  projects     Project[]
 
   @@map("teachers")
+}
+
+
+model Project {
+  id           String   @id @default(uuid())
+  title        String   @db.VarChar(255)
+  description  String   @db.Text
+  teacher      Teacher  @relation(fields: [teacherId], references: [id])
+  teacherId    String      
+  matter       Matter   @relation(fields: [matterId], references: [id])
+  matterId     String   @unique
+  student      Student  @relation(fields: [studentId], references: [id])
+  studentId    String
+
+  created_at   DateTime @default(now())
+
+  @@map("projects")
 }
 
 model Subject {
