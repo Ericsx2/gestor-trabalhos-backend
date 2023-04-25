@@ -1,6 +1,7 @@
 import { studentRouter } from './studentRoutes';
 import { teacherRouter } from './teacherRoutes';
+import { subjectRouter } from './subjectRoutes';
+import { coordenationRouter } from './coordenationRoutes';
 import { projectRouter } from './projectRoutes';
-import { matterRouter } from './matterRoutes';
 
-export { studentRouter, teacherRouter, projectRouter, matterRouter  };
+export { studentRouter, teacherRouter, coordenationRouter, subjectRouter, projectRouter };

@@ -40,6 +40,7 @@ model Teacher {
   @@map("teachers")
 }
 
+
 model Project {
   id           String   @id @default(uuid())
   title        String   @db.VarChar(255)
@@ -54,4 +55,29 @@ model Project {
   created_at   DateTime @default(now())
 
   @@map("projects")
+}
+
+model Subject {
+  id         String   @id @default(uuid())
+  name       String   @db.VarChar(50)
+  code       String
+  created_at DateTime @default(now())
+  deleted    Boolean  @default(false)
+
+  @@map("subjects")
+}
+
+model Coordenation {
+  id           String   @id @default(uuid())
+  name         String   @db.VarChar(50)
+  last_name    String   @db.VarChar(100)
+  email        String   @db.VarChar(200)
+  phone        String   @db.VarChar(9)
+  ddd          String   @db.VarChar(2)
+  password     String
+  created_at   DateTime @default(now())
+  deleted      Boolean  @default(false)
+  role         Int      @default(2)
+
+  @@map("coordenation")
 }
