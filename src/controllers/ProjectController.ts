@@ -9,7 +9,7 @@ class ProjectController {
   }
 
   async store(request: Request, response: Response) {
-    const { title, description, registration_teatcher, registration_student } =
+    const { title, description, registration_teacher, registration_student } =
       request.body;
 
     const titleAlreadyExists = await prismaClient.project.findFirst({
@@ -44,13 +44,13 @@ class ProjectController {
         .json({ message: 'Aluno não foi encontrado!' });
     }
 
-    const teatcher = await prismaClient.teacher.findFirst({
+    const teacher = await prismaClient.teacher.findFirst({
       where: {
-        registration: registration_teatcher,
+        registration: registration_teacher,
       },
     });
 
-    if (!teatcher) {
+    if (!teacher) {
       return response
         .status(404)
         .json({ message: 'Professor não foi encontrado!' });
@@ -61,7 +61,7 @@ class ProjectController {
         title,
         description,
         studentId: student.id,
-        teacherId: teatcher.id,
+        teacherId: teacher.id,
       },
     });
 
@@ -156,8 +156,6 @@ class ProjectController {
       .status(200)
       .json({ message: 'Projeto deletado com sucesso' });
   }
-
-  async upload(request: Request, response: Response) {}
 }
 
 export { ProjectController };
