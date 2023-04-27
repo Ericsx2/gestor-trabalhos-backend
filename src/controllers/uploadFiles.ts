@@ -4,13 +4,16 @@ import multer, { diskStorage } from 'multer';
 
 const storage = diskStorage({
   destination: function(req, file, cb) {
-    const salt = genSaltSync(10);
-    const hashedName = hashSync(file.originalname, salt);
     cb(null, "src/uploads/");
   },
   filename: function(req, file, cb) {
-    
-    cb(null, file.originalname);
+    const extensionFile = 
+      file.originalname.slice(file.originalname.lastIndexOf("."));
+
+    const salt = genSaltSync(10);
+    const hashedPassword = hashSync(file.originalname, salt);
+
+    cb(null, hashedPassword.substring(0,29)+extensionFile);
   }
 });
 
