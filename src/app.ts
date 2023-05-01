@@ -8,6 +8,7 @@ import {
   coordenationRouter,
   subjectRouter,
   projectRouter,
+  authRouter,
 } from './routes';
 
 const app = express();
@@ -18,5 +19,6 @@ app.use('/teachers', teacherRouter);
 app.use('/projects', projectRouter);
 app.use('/subjects', subjectRouter);
 app.use('/coordenation', coordenationRouter);
+app.use('/auth', authRouter);
 
 export default app;
