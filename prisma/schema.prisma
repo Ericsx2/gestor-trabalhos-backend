@@ -48,18 +48,21 @@ model Project {
   teacherId   String
   student     Student @relation(fields: [studentId], references: [id])
   studentId   String
+  subject     Subject @relation(fields: [subjectId], references: [id])
+  subjectId   String
 
-  created_at DateTime @default(now())
+  created_at  DateTime @default(now())
 
   @@map("projects")
 }
 
 model Subject {
-  id         String   @id @default(uuid())
-  name       String   @db.VarChar(50)
-  code       String
-  created_at DateTime @default(now())
-  deleted    Boolean  @default(false)
+  id          String   @id @default(uuid())
+  name        String   @db.VarChar(50)
+  code        String   @db.VarChar(10)
+  created_at  DateTime @default(now())
+  deleted     Boolean  @default(false)
+  projects    Project[]
 
   @@map("subjects")
 }

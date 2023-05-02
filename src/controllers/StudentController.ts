@@ -64,6 +64,9 @@ class StudentController {
       where: {
         id,
       },
+      include: {
+        projects: true,
+      },
     });
 
     if (!student) {
@@ -76,6 +79,8 @@ class StudentController {
       last_name: student.last_name,
       email: student.email,
       role: student.role,
+      projects: student.projects,
+
     });
   }
 

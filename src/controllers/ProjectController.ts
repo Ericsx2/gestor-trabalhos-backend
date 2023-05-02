@@ -9,7 +9,7 @@ class ProjectController {
   }
 
   async store(request: Request, response: Response) {
-    const { title, description, registration_teatcher, registration_student } =
+    const { title, description, registration_teacher, registration_student, registration_subject } =
       request.body;
 
     const titleAlreadyExists = await prismaClient.project.findFirst({
@@ -44,16 +44,28 @@ class ProjectController {
         .json({ message: 'Aluno não foi encontrado!' });
     }
 
-    const teatcher = await prismaClient.teacher.findFirst({
+    const teacher = await prismaClient.teacher.findFirst({
       where: {
-        registration: registration_teatcher,
+        registration: registration_teacher,
       },
     });
 
-    if (!teatcher) {
+    if (!teacher) {
       return response
         .status(404)
         .json({ message: 'Professor não foi encontrado!' });
+    }
+
+    const subject = await prismaClient.subject.findFirst({
+      where: {
+        code: registration_subject,
+      },
+    });
+
+    if (!subject) {
+      return response
+        .status(404)
+        .json({ message: 'Matéria não foi encontrada!' });
     }
 
     const project = await prismaClient.project.create({
@@ -61,7 +73,8 @@ class ProjectController {
         title,
         description,
         studentId: student.id,
-        teacherId: teatcher.id,
+        teacherId: teacher.id,
+        subjectId: subject.id,
       },
     });
 
@@ -84,12 +97,15 @@ class ProjectController {
       id: project.id,
       title: project.title,
       description: project.description,
+      teacherId: project.teacherId,
+      studentId: project.studentId,
+      subjectId: project.subjectId,
     });
   }
 
   async update(request: Request, response: Response) {
     const { id } = request.params;
-    const { title, description, registration_teatcher, registration_student } =
+    const { title, description, registration_teacher, registration_student, registration_subject } =
       request.body;
 
     const titleAlreadyExists = await prismaClient.project.findFirst({
@@ -116,16 +132,28 @@ class ProjectController {
         .json({ message: 'Aluno não foi encontrado!' });
     }
 
-    const teatcher = await prismaClient.teacher.findFirst({
+    const teacher = await prismaClient.teacher.findFirst({
       where: {
-        registration: registration_teatcher,
+        registration: registration_teacher,
       },
     });
 
-    if (!teatcher) {
+    if (!teacher) {
       return response
         .status(404)
         .json({ message: 'Professor não foi encontrado!' });
+    }
+
+    const subject = await prismaClient.subject.findFirst({
+      where: {
+        code: registration_subject,
+      },
+    });
+
+    if (!subject) {
+      return response
+        .status(404)
+        .json({ message: 'Matéria não foi encontrada!' });
     }
 
     const project = await prismaClient.project.update({
@@ -133,7 +161,8 @@ class ProjectController {
         title,
         description,
         studentId: student.id,
-        teacherId: teatcher.id,
+        teacherId: teacher.id,
+        subjectId: subject.id,
       },
       where: {
         id,
