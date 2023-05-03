@@ -52,7 +52,10 @@ class SubjectController {
         const subject = await prismaClient.subject.findFirst({
             where: {
                 id,
-            }
+            },
+            include: {
+                projects: true,
+            },
         });
 
         if (!subject) {
@@ -63,6 +66,7 @@ class SubjectController {
             id: subject.id,
             name: subject.name,
             code: subject.code,
+            projects: subject.projects,
         });
     }
 

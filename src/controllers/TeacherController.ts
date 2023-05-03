@@ -63,6 +63,9 @@ class TeacherController {
         const teacher = await prismaClient.teacher.findFirst({
             where: {
                 id,
+            },
+            include:{
+                projects: true,
             }
         });
 
@@ -76,6 +79,7 @@ class TeacherController {
             last_name: teacher.last_name,
             email: teacher.email,
             role: teacher.role,
+            projects: teacher.projects,
         });
     }
 
