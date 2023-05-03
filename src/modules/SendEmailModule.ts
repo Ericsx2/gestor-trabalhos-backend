@@ -38,7 +38,8 @@ interface IMailOptions {
   context: {
     subject: string;
     name: string;
-    message: string;
+    link: string;
+    password: string;
   };
 }
 

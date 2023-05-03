@@ -185,8 +185,6 @@ class ProjectController {
       .status(200)
       .json({ message: 'Projeto deletado com sucesso' });
   }
-
-  async upload(request: Request, response: Response) {}
 }
 
 export { ProjectController };
