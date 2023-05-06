@@ -27,7 +27,7 @@ class CoordenationController {
       return response.status(302).send({ message: 'Nome já existente!' });
     }
 
-    const emailAlreadyExists = await prismaClient.coordenation.findFirst({
+    const emailAlreadyExists = await prismaClient.user.findFirst({
       where: {
         email,
       },
@@ -55,14 +55,21 @@ class CoordenationController {
     });
     const hashedPassword = hashSync(generatedPassword, salt);
 
+    const user = await prismaClient.user.create({
+      data: {
+          email,
+          role: 0,
+          password: hashedPassword,
+      }
+    });
+
     const coordenation = await prismaClient.coordenation.create({
       data: {
         name,
-        email,
         last_name,
         phone,
         ddd,
-        password: hashedPassword,
+        userId: user.id,
       },
     });
 
@@ -85,10 +92,8 @@ class CoordenationController {
       id: coordenation.id,
       name: coordenation.name,
       last_name: coordenation.last_name,
-      email: coordenation.email,
       phone: coordenation.phone,
       ddd: coordenation.ddd,
-      role: coordenation.role
     });
   }
 
@@ -109,7 +114,6 @@ class CoordenationController {
     const coordenationUpdated = await prismaClient.coordenation.update({
       data: {
         name,
-        email,
         last_name,
         phone,
         ddd,

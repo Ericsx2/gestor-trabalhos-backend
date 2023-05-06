@@ -29,7 +29,7 @@ class StudentController {
       return response.status(302).send({ message: 'Nome já existente!' });
     }
 
-    const emailAlreadyExists = await prismaClient.student.findFirst({
+    const emailAlreadyExists = await prismaClient.user.findFirst({
       where: {
         email,
       },
@@ -47,13 +47,20 @@ class StudentController {
     });
     const hashedPassword = hashSync(generatedPassword, salt);
 
+    const user = await prismaClient.user.create({
+      data: {
+          email,
+          role: 2,
+          password: hashedPassword,
+      }
+    });
+
     const student = await prismaClient.student.create({
       data: {
         name,
-        email,
         last_name,
         registration,
-        password: hashedPassword,
+        userId: user.id
       },
     });
 
@@ -102,8 +109,6 @@ class StudentController {
       id: student.id,
       name: student.name,
       last_name: student.last_name,
-      email: student.email,
-      role: student.role,
       projects: student.projects,
 
     });
@@ -127,7 +132,6 @@ class StudentController {
     const studentUpdated = await prismaClient.student.update({
       data: {
         name,
-        email,
         last_name,
         registration,
       },

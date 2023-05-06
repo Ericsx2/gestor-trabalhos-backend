@@ -10,16 +10,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        String      @id @default(uuid())
+  email     String      @db.VarChar(50)
+  role      Int         @db.Integer
+  password  String     
+  teacher   Teacher?
+  student   Student?
+  coordenation Coordenation?
+  @@map("users")
+}
+
 model Student {
   id           String    @id @default(uuid())
   name         String    @db.VarChar(50)
   last_name    String    @db.VarChar(100)
-  email        String    @db.VarChar(200)
-  password     String
   registration String    @db.VarChar(10)
   created_at   DateTime  @default(now())
   deleted      Boolean   @default(false)
-  role         Int       @default(2)
+  
+  userId       String?   @unique
+  user         User?     @relation(fields: [userId], references: [id])
   projects     Project[]
 
   @@map("students")
@@ -29,12 +40,12 @@ model Teacher {
   id           String    @id @default(uuid())
   name         String    @db.VarChar(50)
   last_name    String    @db.VarChar(100)
-  email        String    @db.VarChar(200)
-  password     String
   registration String    @db.VarChar(10)
   created_at   DateTime  @default(now())
   deleted      Boolean   @default(false)
-  role         Int       @default(1)
+
+  userId       String?   @unique
+  user         User?     @relation(fields: [userId], references: [id])
   projects     Project[]
 
   @@map("teachers")
@@ -71,13 +82,14 @@ model Coordenation {
   id         String   @id @default(uuid())
   name       String   @db.VarChar(50)
   last_name  String   @db.VarChar(100)
-  email      String   @db.VarChar(200)
   phone      String   @db.VarChar(9)
   ddd        String   @db.VarChar(2)
-  password   String
   created_at DateTime @default(now())
   deleted    Boolean  @default(false)
   role       Int      @default(0)
+
+  userId       String?   @unique
+  user         User?     @relation(fields: [userId], references: [id])
 
   @@map("coordenation")
 }
@@ -89,3 +101,5 @@ model Permission {
 
   @@map("permission")
 }
+
+
