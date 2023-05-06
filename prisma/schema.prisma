@@ -19,7 +19,7 @@ model Student {
   registration String    @db.VarChar(10)
   created_at   DateTime  @default(now())
   deleted      Boolean   @default(false)
-  role         Int       @default(1)
+  role         Int       @default(2)
   projects     Project[]
 
   @@map("students")
@@ -34,7 +34,7 @@ model Teacher {
   registration String    @db.VarChar(10)
   created_at   DateTime  @default(now())
   deleted      Boolean   @default(false)
-  role         Int       @default(2)
+  role         Int       @default(1)
   projects     Project[]
 
   @@map("teachers")
@@ -77,7 +77,15 @@ model Coordenation {
   password   String
   created_at DateTime @default(now())
   deleted    Boolean  @default(false)
-  role       Int      @default(2)
+  role       Int      @default(0)
 
   @@map("coordenation")
+}
+
+model Permission {
+  id        String      @id @default(uuid())
+  role      Int         @db.Integer
+  type      String      @db.VarChar(50) @unique
+
+  @@map("permission")
 }
