@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { prismaClient } from '../database/prismaClient';
 import { generate } from 'generate-password';
 import { hashSync, genSaltSync } from 'bcrypt';
+import { IMailOptions, transporter } from '../modules/SendEmailModule';
+require('dotenv').config();
 
 class CoordenationController {
   async index(_: Request, response: Response) {
@@ -11,7 +13,7 @@ class CoordenationController {
       },
     });
 
-    return response.send(coordenations);  
+    return response.send(coordenations);
   }
 
   async store(request: Request, response: Response) {
@@ -53,6 +55,7 @@ class CoordenationController {
       numbers: true,
       symbols: true,
     });
+
     const hashedPassword = hashSync(generatedPassword, salt);
 
     const coordenation = await prismaClient.coordenation.create({
@@ -64,6 +67,28 @@ class CoordenationController {
         ddd,
         password: hashedPassword,
       },
+    });
+
+    const mailOptions: IMailOptions = {
+      to: email,
+      from: `COLCIC <${process.env.SMTP_USER}>`,
+      subject: 'Primeiro Acesso',
+      text: `Olá ${name}, essa é a sua senha temporária ${hashedPassword}, para alterar entre no link`,
+      template: 'firstAcess',
+      context: {
+        subject: 'Primeiro Acesso',
+        name,
+        link: 'https://www.google.com',
+        password: hashedPassword,
+      },
+    };
+
+    await transporter.sendMail(mailOptions).catch((error) => {
+      if (error) {
+        return response
+          .status(500)
+          .send({ message: 'Erro ao enviar email', error });
+      }
     });
 
     return response.send({ message: 'Usuário criado com sucesso!' });
@@ -88,7 +113,7 @@ class CoordenationController {
       email: coordenation.email,
       phone: coordenation.phone,
       ddd: coordenation.ddd,
-      role: coordenation.role
+      role: coordenation.role,
     });
   }
 

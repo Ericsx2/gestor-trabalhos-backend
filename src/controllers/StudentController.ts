@@ -59,17 +59,17 @@ class StudentController {
 
     const mailOptions: IMailOptions = {
       to: email,
-      from: `Recovery Password <${process.env.SMTP_USER}>`,
-      subject: 'Recovery Password',
+      from: `COLCIC <${process.env.SMTP_USER}>`,
+      subject: 'Primeiro Acesso',
       text: `Olá ${name}, essa é a sua senha temporária ${hashedPassword}, para alterar entre no link`,
-      template: 'recuperar_senha',
+      template: 'firstAcess',
       context: {
-        subject: 'Recovery Password',
+        subject: 'Primeiro Acesso',
         name,
-        link: 'https://www.youtube.com/watch?v=5-qbpf17lz8&t=12s',
+        link: 'https://www.google.com',
         password: hashedPassword,
       },
-    }
+    };
 
     await transporter.sendMail(mailOptions).catch((error) => {
       if (error) {
@@ -78,7 +78,6 @@ class StudentController {
           .send({ message: 'Erro ao enviar email', error });
       }
     });
-
 
     return response.send({ message: 'Usuário criado com sucesso' });
   }
@@ -105,14 +104,12 @@ class StudentController {
       email: student.email,
       role: student.role,
       projects: student.projects,
-
     });
   }
 
   async update(request: Request, response: Response) {
     const { id } = request.params;
     const { name, last_name, registration, email } = request.body;
-
 
     const student = await prismaClient.student.findFirst({
       where: {

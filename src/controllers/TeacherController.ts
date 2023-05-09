@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { prismaClient } from '../database/prismaClient';
 import { generate } from 'generate-password';
 import { hashSync, genSaltSync } from 'bcrypt';
+import { IMailOptions, transporter } from '../modules/SendEmailModule';
+require('dotenv').config();
 
 class TeacherController {
     async index(_: Request, response: Response) {
@@ -54,6 +56,28 @@ class TeacherController {
                 password: hashedPassword,
             },
         });
+
+        const mailOptions: IMailOptions = {
+            to: email,
+            from: `COLCIC <${process.env.SMTP_USER}>`,
+            subject: 'Primeiro Acesso',
+            text: `Olá ${name}, essa é a sua senha temporária ${hashedPassword}, para alterar entre no link`,
+            template: 'firstAcess',
+            context: { 
+              subject: 'Primeiro Acesso',
+              name,
+              link: 'https://www.google.com',
+              password: hashedPassword,
+            },
+          }
+      
+          await transporter.sendMail(mailOptions).catch((error) => {
+            if (error) {
+              return response
+                .status(500)
+                .send({ message: 'Erro ao enviar email', error });
+            }
+          });
 
         return response.send({ message: 'Usuário criado com sucesso' });
     }
