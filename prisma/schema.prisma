@@ -10,43 +10,56 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ROLE {
+  Student
+  Teacher
+  Admin
+}
+
 model Project {
   id          String  @id @default(uuid())
   title       String  @db.VarChar(255)
   description String  @db.Text
-  teacher     User    @relation(fields: [teacherId], references: [id])
-  teacherId   String
-  student     String
   subject     Subject @relation(fields: [subjectId], references: [id])
   subjectId   String
 
-  created_at  DateTime @default(now())
+  created_at DateTime          @default(now())
+  Users      UsersOnProjects[]
 
   @@map("projects")
 }
 
 model Subject {
-  id          String   @id @default(uuid())
-  name        String   @db.VarChar(50)
-  code        String   @db.VarChar(10)
-  created_at  DateTime @default(now())
-  deleted     Boolean  @default(false)
-  projects    Project[]
+  id         String    @id @default(uuid())
+  name       String    @db.VarChar(50)
+  code       String    @db.VarChar(10)
+  created_at DateTime  @default(now())
+  deleted    Boolean   @default(false)
+  projects   Project[]
 
   @@map("subjects")
 }
 
 model User {
-  id         String   @id @default(uuid())
-  name       String   @db.VarChar(50)
-  last_name  String   @db.VarChar(100)
-  email      String   @db.VarChar(200)
-  registration String    @db.VarChar(10)
-  password   String
-  created_at DateTime @default(now())
-  deleted    Boolean  @default(false)
-  role       Int      
-  projects   Project[]
+  id           String            @id @default(uuid())
+  name         String            @db.VarChar(50)
+  last_name    String            @db.VarChar(100)
+  email        String            @unique @db.VarChar(200)
+  registration String            @unique @db.VarChar(10)
+  password     String
+  created_at   DateTime          @default(now())
+  deleted      Boolean           @default(false)
+  role         ROLE              @default(Student)
+  Projects     UsersOnProjects[]
 
   @@map("users")
+}
+
+model UsersOnProjects {
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId String
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+
+  @@id([projectId, userId])
 }

@@ -9,8 +9,13 @@ class ProjectController {
   }
 
   async store(request: Request, response: Response) {
-    const { title, description, registration_teacher, registration_student, registration_subject } =
-      request.body;
+    const {
+      title,
+      description,
+      registration_teacher,
+      registration_student,
+      registration_subject,
+    } = request.body;
 
     const titleAlreadyExists = await prismaClient.project.findFirst({
       where: {
@@ -72,9 +77,17 @@ class ProjectController {
       data: {
         title,
         description,
-        student: student.name,
-        teacherId: teacher.id,
         subjectId: subject.id,
+        Users: {
+          create: [
+            {
+              userId: student.id,
+            },
+            {
+              userId: teacher.id,
+            },
+          ],
+        },
       },
     });
 
@@ -100,8 +113,13 @@ class ProjectController {
 
   async update(request: Request, response: Response) {
     const { id } = request.params;
-    const { title, description, registration_teacher, registration_student, registration_subject } =
-      request.body;
+    const {
+      title,
+      description,
+      registration_teacher,
+      registration_student,
+      registration_subject,
+    } = request.body;
 
     const titleAlreadyExists = await prismaClient.project.findFirst({
       where: {
@@ -155,9 +173,16 @@ class ProjectController {
       data: {
         title,
         description,
-        student: student.name,
-        teacherId: teacher.id,
-        subjectId: subject.id,
+        Users: {
+          create: [
+            {
+              userId: student.id,
+            },
+            {
+              userId: teacher.id,
+            },
+          ],
+        },
       },
       where: {
         id,

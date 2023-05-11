@@ -1,8 +1,6 @@
-import { studentRouter } from './studentRoutes';
-import { teacherRouter } from './teacherRoutes';
 import { subjectRouter } from './subjectRoutes';
-import { coordenationRouter } from './coordenationRoutes';
 import { authRouter } from './authRoutes';
 import { projectRouter } from './projectRoutes';
+import { userRouter } from './userRoutes';
 
-export { studentRouter, teacherRouter, coordenationRouter, subjectRouter, authRouter, projectRouter };
+export { subjectRouter, authRouter, projectRouter, userRouter };

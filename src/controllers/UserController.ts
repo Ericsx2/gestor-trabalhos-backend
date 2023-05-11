@@ -1,35 +1,24 @@
 import { Request, Response } from 'express';
 import { prismaClient } from '../database/prismaClient';
 import { generate } from 'generate-password';
-import { hashSync, genSaltSync } from 'bcrypt';
+import { genSaltSync, hashSync } from 'bcrypt';
 import { IMailOptions, transporter } from '../modules/SendEmailModule';
-require('dotenv').config();
 
-class StudentController {
+class UserController {
   async index(_: Request, response: Response) {
-    const students = await prismaClient.user.findMany({
+    const users = await prismaClient.user.findMany({
       where: {
         deleted: false,
       },
     });
 
-    return response.send(students);
+    return response.send(users);
   }
 
   async store(request: Request, response: Response) {
     const { name, last_name, registration, email } = request.body;
 
-    const nameAlreadyExists = await prismaClient.user.findFirst({
-      where: {
-        name,
-      },
-    });
-
-    if (nameAlreadyExists) {
-      return response.status(302).send({ message: 'Nome já existente!' });
-    }
-
-    const emailAlreadyExists = await prismaClient.user.findFirst({
+    const emailAlreadyExists = await prismaClient.user.findUnique({
       where: {
         email,
       },
@@ -39,6 +28,16 @@ class StudentController {
       return response.status(302).send({ message: 'Email já existente!' });
     }
 
+    const registrationAlreadyExists = await prismaClient.user.findUnique({
+      where: {
+        registration,
+      },
+    });
+
+    if (registrationAlreadyExists) {
+      return response.status(302).send({ message: 'Matrícula já existente!' });
+    }
+
     const salt = genSaltSync(10);
     const generatedPassword = generate({
       length: 10,
@@ -46,15 +45,15 @@ class StudentController {
       symbols: true,
     });
     const hashedPassword = hashSync(generatedPassword, salt);
+    console.log(generatedPassword);
 
-    const student = await prismaClient.user.create({
+    const user = await prismaClient.user.create({
       data: {
         name,
         email,
         last_name,
         registration,
         password: hashedPassword,
-        role: 2
       },
     });
 
@@ -70,7 +69,7 @@ class StudentController {
         link: 'https://www.youtube.com/watch?v=5-qbpf17lz8&t=12s',
         password: hashedPassword,
       },
-    }
+    };
 
     await transporter.sendMail(mailOptions).catch((error) => {
       if (error) {
@@ -80,33 +79,28 @@ class StudentController {
       }
     });
 
-
     return response.send({ message: 'Usuário criado com sucesso' });
   }
 
   async show(request: Request, response: Response) {
     const { id } = request.params;
-    const student = await prismaClient.user.findFirst({
+    const user = await prismaClient.user.findFirst({
       where: {
         id,
       },
-      include: {
-        projects: true,
-      },
     });
 
-    if (!student) {
+    if (!user) {
       return response.status(404).send({ message: 'Usuário não encontrado' });
     }
 
     return response.send({
-      id: student.id,
-      name: student.name,
-      last_name: student.last_name,
-      email: student.email,
-      role: student.role,
-      projects: student.projects,
-
+      id: user.id,
+      name: user.name,
+      last_name: user.last_name,
+      email: user.email,
+      registration: user.registration,
+      role: user.role,
     });
   }
 
@@ -114,18 +108,17 @@ class StudentController {
     const { id } = request.params;
     const { name, last_name, registration, email } = request.body;
 
-
-    const student = await prismaClient.user.findFirst({
+    const user = await prismaClient.user.findFirst({
       where: {
         id,
       },
     });
 
-    if (!student) {
+    if (!user) {
       return response.status(404).send({ message: 'Usuário não encontrado' });
     }
 
-    const studentUpdated = await prismaClient.user.update({
+    const userUpdated = await prismaClient.user.update({
       data: {
         name,
         email,
@@ -143,7 +136,7 @@ class StudentController {
   async delete(request: Request, response: Response) {
     const { id } = request.params;
 
-    const deletedStudent = await prismaClient.user.update({
+    const deletedUser = await prismaClient.user.update({
       data: {
         deleted: true,
       },
@@ -156,4 +149,4 @@ class StudentController {
   }
 }
 
-export { StudentController };
+export { UserController };
