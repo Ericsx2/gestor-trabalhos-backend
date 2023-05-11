@@ -5,7 +5,7 @@ import { hashSync, genSaltSync } from 'bcrypt';
 
 class CoordenationController {
   async index(_: Request, response: Response) {
-    const coordenations = await prismaClient.coordenation.findMany({
+    const coordenations = await prismaClient.user.findMany({
       where: {
         deleted: false,
       },
@@ -15,9 +15,9 @@ class CoordenationController {
   }
 
   async store(request: Request, response: Response) {
-    const { name, last_name, email, phone, ddd } = request.body;
+    const { name, last_name, registration, email } = request.body;
 
-    const nameAlreadyExists = await prismaClient.coordenation.findFirst({
+    const nameAlreadyExists = await prismaClient.user.findFirst({
       where: {
         name,
       },
@@ -27,7 +27,7 @@ class CoordenationController {
       return response.status(302).send({ message: 'Nome já existente!' });
     }
 
-    const emailAlreadyExists = await prismaClient.coordenation.findFirst({
+    const emailAlreadyExists = await prismaClient.user.findFirst({
       where: {
         email,
       },
@@ -37,14 +37,14 @@ class CoordenationController {
       return response.status(302).send({ message: 'Email já existente!' });
     }
 
-    const phoneAlreadyExists = await prismaClient.coordenation.findFirst({
+    const registrationAlreadyExists = await prismaClient.user.findFirst({
       where: {
-        phone,
+        registration,
       },
     });
 
-    if (phoneAlreadyExists) {
-      return response.status(302).send({ message: 'Telefone já existente!' });
+    if (registrationAlreadyExists) {
+      return response.status(302).send({ message: 'Matrícula já existente!' });
     }
 
     const salt = genSaltSync(10);
@@ -55,14 +55,14 @@ class CoordenationController {
     });
     const hashedPassword = hashSync(generatedPassword, salt);
 
-    const coordenation = await prismaClient.coordenation.create({
+    const coordenation = await prismaClient.user.create({
       data: {
         name,
         email,
         last_name,
-        phone,
-        ddd,
         password: hashedPassword,
+        role: 0,
+        registration,
       },
     });
 
@@ -71,7 +71,7 @@ class CoordenationController {
 
   async show(request: Request, response: Response) {
     const { id } = request.params;
-    const coordenation = await prismaClient.coordenation.findFirst({
+    const coordenation = await prismaClient.user.findFirst({
       where: {
         id,
       },
@@ -86,17 +86,15 @@ class CoordenationController {
       name: coordenation.name,
       last_name: coordenation.last_name,
       email: coordenation.email,
-      phone: coordenation.phone,
-      ddd: coordenation.ddd,
       role: coordenation.role
     });
   }
 
   async update(request: Request, response: Response) {
     const { id } = request.params;
-    const { name, last_name, email, phone, ddd } = request.body;
+    const { name, last_name, email } = request.body;
 
-    const coordenation = await prismaClient.coordenation.findFirst({
+    const coordenation = await prismaClient.user.findFirst({
       where: {
         id,
       },
@@ -106,13 +104,11 @@ class CoordenationController {
       return response.status(404).send({ message: 'Usuário não encontrado!' });
     }
 
-    const coordenationUpdated = await prismaClient.coordenation.update({
+    const coordenationUpdated = await prismaClient.user.update({
       data: {
         name,
         email,
         last_name,
-        phone,
-        ddd,
       },
       where: {
         id,
@@ -125,7 +121,7 @@ class CoordenationController {
   async delete(request: Request, response: Response) {
     const { id } = request.params;
 
-    const deletedcoordenation = await prismaClient.coordenation.update({
+    const deletedcoordenation = await prismaClient.user.update({
       data: {
         deleted: true,
       },

@@ -5,7 +5,7 @@ import { hashSync, genSaltSync } from 'bcrypt';
 
 class TeacherController {
     async index(_: Request, response: Response) {
-        const teachers = await prismaClient.teacher.findMany({
+        const teachers = await prismaClient.user.findMany({
             where: {
                 deleted: false,
             }
@@ -17,7 +17,7 @@ class TeacherController {
     async store(request: Request, response: Response) {
         const { name, last_name, registration, email } = request.body;
 
-        const nameAlreadyExists = await prismaClient.teacher.findFirst({
+        const nameAlreadyExists = await prismaClient.user.findFirst({
             where: {
                 name,
             }
@@ -27,7 +27,7 @@ class TeacherController {
             return response.status(302).send({ message: 'Nome já existente!' });
         }
 
-        const emailAlreadyExists = await prismaClient.teacher.findFirst({
+        const emailAlreadyExists = await prismaClient.user.findFirst({
             where: {
                 email
             }
@@ -45,13 +45,14 @@ class TeacherController {
         });
         const hashedPassword = hashSync(generatedPassword, salt);
 
-        const teacher = await prismaClient.teacher.create({
+        const teacher = await prismaClient.user.create({
             data: {
                 name,
                 email,
                 last_name,
                 registration,
                 password: hashedPassword,
+                role: 1
             },
         });
 
@@ -60,7 +61,7 @@ class TeacherController {
 
     async show(request: Request, response: Response) {
         const { id } = request.params;
-        const teacher = await prismaClient.teacher.findFirst({
+        const teacher = await prismaClient.user.findFirst({
             where: {
                 id,
             },
@@ -87,7 +88,7 @@ class TeacherController {
         const { id } = request.params;
         const { name, last_name, registration, email } = request.body;
 
-        const teacher = await prismaClient.teacher.findFirst({
+        const teacher = await prismaClient.user.findFirst({
             where: {
                 id,
             },
@@ -97,7 +98,7 @@ class TeacherController {
             return response.status(404).send({ message: 'Usuário não encontrado' });
         }
 
-        const teacherUpdated = await prismaClient.teacher.update({
+        const teacherUpdated = await prismaClient.user.update({
             data: {
                 name,
                 email,
@@ -115,7 +116,7 @@ class TeacherController {
     async delete(request: Request, response: Response) {
         const { id } = request.params;
 
-        const deletedTeacher = await prismaClient.teacher.update({
+        const deletedTeacher = await prismaClient.user.update({
             data: {
                 deleted: true,
             },
