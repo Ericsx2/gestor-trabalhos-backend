@@ -32,7 +32,7 @@ class ProjectController {
       return response.status(302).send({ message: 'Descrição já existente!' });
     }
 
-    const student = await prismaClient.student.findFirst({
+    const student = await prismaClient.user.findFirst({
       where: {
         registration: registration_student,
       },
@@ -44,7 +44,7 @@ class ProjectController {
         .json({ message: 'Aluno não foi encontrado!' });
     }
 
-    const teacher = await prismaClient.teacher.findFirst({
+    const teacher = await prismaClient.user.findFirst({
       where: {
         registration: registration_teacher,
       },
@@ -72,7 +72,7 @@ class ProjectController {
       data: {
         title,
         description,
-        studentId: student.id,
+        student: student.name,
         teacherId: teacher.id,
         subjectId: subject.id,
       },
@@ -94,12 +94,7 @@ class ProjectController {
     }
 
     return response.status(200).json({
-      id: project.id,
-      title: project.title,
-      description: project.description,
-      teacherId: project.teacherId,
-      studentId: project.studentId,
-      subjectId: project.subjectId,
+      project,
     });
   }
 
@@ -120,7 +115,7 @@ class ProjectController {
       },
     });
 
-    const student = await prismaClient.student.findFirst({
+    const student = await prismaClient.user.findFirst({
       where: {
         registration: registration_student,
       },
@@ -132,7 +127,7 @@ class ProjectController {
         .json({ message: 'Aluno não foi encontrado!' });
     }
 
-    const teacher = await prismaClient.teacher.findFirst({
+    const teacher = await prismaClient.user.findFirst({
       where: {
         registration: registration_teacher,
       },
@@ -160,7 +155,7 @@ class ProjectController {
       data: {
         title,
         description,
-        studentId: student.id,
+        student: student.name,
         teacherId: teacher.id,
         subjectId: subject.id,
       },
