@@ -18,26 +18,6 @@ class ProjectController {
       registration_subject,
     } = request.body;
 
-    const titleAlreadyExists = await prismaClient.project.findFirst({
-      where: {
-        title,
-      },
-    });
-
-    if (titleAlreadyExists) {
-      //return response.status(302).send({ message: 'Projeto já existente!' });
-    }
-
-    const descriptionAlreadyExists = await prismaClient.project.findFirst({
-      where: {
-        description,
-      },
-    });
-
-    if (descriptionAlreadyExists) {
-      //return response.status(302).send({ message: 'Descrição já existente!' });
-    }
-
     const student = await prismaClient.user.findFirst({
       where: {
         registration: registration_student,
