@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { prismaClient } from '../database/prismaClient';
-import { ProjectIMailOptions, transporter } from '../modules/SendEmailModule';
 
 class ProjectController {
   async index(_: Request, response: Response) {
@@ -25,7 +24,7 @@ class ProjectController {
     });
 
     if (titleAlreadyExists) {
-      //return response.status(302).send({ message: 'Projeto já existente!' });
+      return response.status(302).send({ message: 'Projeto já existente!' });
     }
 
     const descriptionAlreadyExists = await prismaClient.project.findFirst({
@@ -35,7 +34,7 @@ class ProjectController {
     });
 
     if (descriptionAlreadyExists) {
-      //return response.status(302).send({ message: 'Descrição já existente!' });
+      return response.status(302).send({ message: 'Descrição já existente!' });
     }
 
     const student = await prismaClient.user.findFirst({
@@ -90,33 +89,6 @@ class ProjectController {
           ],
         },
       },
-    });
-
-    const mailOptions: ProjectIMailOptions = {
-      to: [student.email, teacher.email],
-      from: `${process.env.SMTP_USER}`,
-      subject: 'Seu projeto foi criado com sucesso!',
-      template: 'project_created',
-      context: {
-        title,
-        link: `http://127.0.0.1:3333/projects/${project.id}`,
-        student: {
-          name: student.name,
-          last_name: student.last_name,
-        },
-        teacher: {
-          name: teacher.name,
-          last_name: teacher.last_name,
-        }
-      }
-    };
-
-    await transporter.sendMail(mailOptions).catch((error) => {
-      if (error) {
-        return response
-          .status(500)
-          .send({ message: 'Erro ao enviar email', error });
-      }
     });
 
     return response.send({ message: 'Projeto criado com sucesso' });
