@@ -45,7 +45,6 @@ class UserController {
       symbols: true,
     });
     const hashedPassword = hashSync(generatedPassword, salt);
-    console.log(generatedPassword);
 
     const user = await prismaClient.user.create({
       data: {
@@ -59,15 +58,15 @@ class UserController {
 
     const mailOptions: IMailOptions = {
       to: email,
-      from: `Recovery Password <${process.env.SMTP_USER}>`,
-      subject: 'Recovery Password',
-      text: `Olá ${name}, essa é a sua senha temporária ${hashedPassword}, para alterar entre no link`,
-      template: 'recuperar_senha',
+      from: `COLCIC <${process.env.SMTP_USER}>`,
+      subject: 'Primeiro Acesso',
+      text: `Olá ${name}, essa é a sua senha temporária ${generatedPassword}, para alterar entre no link`,
+      template: 'first_access',
       context: {
-        subject: 'Recovery Password',
+        subject: 'Primeiro Acesso',
         name,
-        link: 'https://www.youtube.com/watch?v=5-qbpf17lz8&t=12s',
-        password: hashedPassword,
+        link: 'https://www.google.com',
+        password: generatedPassword,
       },
     };
 
