@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 
 class AuthController {
     async auth(request: Request, response: Response) {
-        const { email, password } = request.body;
+        const { email, password, role } = request.body;
 
         const user = await prismaClient.user.findFirst({
             where: {
@@ -26,7 +26,8 @@ class AuthController {
         const token = jwt.sign({
             id: user.id,
             name: user.name,
-            email: user.email
+            email: user.email,
+            role: user.role
         },
             process.env.JWT_SECRET as string,
             { expiresIn: '24h' });

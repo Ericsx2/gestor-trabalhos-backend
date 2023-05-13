@@ -16,7 +16,7 @@ class UserController {
   }
 
   async store(request: Request, response: Response) {
-    const { name, last_name, registration, email } = request.body;
+    const { name, last_name, registration, email, role } = request.body;
 
     const emailAlreadyExists = await prismaClient.user.findUnique({
       where: {
@@ -45,7 +45,7 @@ class UserController {
       symbols: true,
     });
     const hashedPassword = hashSync(generatedPassword, salt);
-    console.log(generatedPassword);
+    console.log(generatedPassword, role);
 
     const user = await prismaClient.user.create({
       data: {
@@ -54,6 +54,7 @@ class UserController {
         last_name,
         registration,
         password: hashedPassword,
+        role
       },
     });
 
