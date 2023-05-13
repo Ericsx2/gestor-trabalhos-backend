@@ -43,4 +43,23 @@ interface IMailOptions {
   };
 }
 
-export { IMailOptions, transporter };
+interface ProjectIMailOptions {
+  to: string[];
+  from: string;
+  subject: string;
+  template: string;
+  context: {
+    title: string,
+    student: {
+      name: string,
+      last_name: string
+    },
+    teacher: {
+      name: string,
+      last_name: string
+    },
+    link: string;
+  }
+}
+
+export { IMailOptions, ProjectIMailOptions, transporter };
