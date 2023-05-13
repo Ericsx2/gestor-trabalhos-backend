@@ -37,9 +37,9 @@ interface IMailOptions {
   text: string;
   context: {
     subject: string;
-    name: string;
-    link: string;
-    password: string;
+    name?: string;
+    link?: string;
+    password?: string;
   };
 }
 

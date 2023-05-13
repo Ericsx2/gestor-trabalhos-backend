@@ -146,6 +146,62 @@ class UserController {
 
     return response.send({ message: 'usuário deletado com sucesso' });
   }
+
+  async sendRecoveryPasswordEmail(request: Request, response: Response) {
+    const { email, name } = request.body;
+
+    const mailOptions: IMailOptions = {
+      to: email,
+      from: `<${process.env.SMTP_USER}>`,
+      subject: 'Recuperação de Senha',
+      text: `Olá ${name}, Segue abaixo o link para recuperação de senha`,
+      template: 'recovery_password',
+      context: {
+        subject: 'Primeiro Acesso',
+        name,
+        link: 'https://www.google.com',
+      },
+    };
+
+    await transporter.sendMail(mailOptions).catch((error) => {
+      if (error) {
+        return response
+          .status(500)
+          .send({ message: 'Erro ao enviar email', error });
+      }
+    });
+
+    return response.send();
+  }
+
+  async recoveryPassword(request: Request, response: Response) {
+    const { id } = request.params;
+    const { password } = request.body;
+
+    const user = prismaClient.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) {
+      return response.status(404).send({ message: 'Usuário não encontrado' });
+    }
+
+    const salt = genSaltSync(10);
+    const hashedPassword = hashSync(password, salt);
+
+    const updatedUser = await prismaClient.user.update({
+      data: {
+        password: hashedPassword,
+      },
+      where: {
+        id,
+      },
+    });
+
+    return response.send({ message: 'Senha Alterada com sucesso' });
+  }
 }
 
 export { UserController };
