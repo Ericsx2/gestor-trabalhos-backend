@@ -38,6 +38,15 @@ class UserController {
       return response.status(302).send({ message: 'Matrícula já existente!' });
     }
 
+    const registrationRequestUpdated = await prismaClient.registrationRequest.update({
+      data: {
+        was_created: true
+      },
+      where: {
+        registration
+      }
+    });
+
     const salt = genSaltSync(10);
     const generatedPassword = generate({
       length: 10,

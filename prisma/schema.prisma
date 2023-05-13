@@ -16,6 +16,17 @@ enum ROLE {
   Admin
 }
 
+model RegistrationRequest{
+  id           String  @id @default(uuid())
+  registration String  @unique @db.VarChar(10)
+  was_created  Boolean @default(false)
+  
+  
+  created_at DateTime          @default(now())
+
+  @@map("registration_requests")
+}
+
 model Project {
   id          String  @id @default(uuid())
   title       String  @db.VarChar(255)
