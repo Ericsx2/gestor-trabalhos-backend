@@ -11,7 +11,8 @@ app.use(cors());
 app.use('/projects', projectRouter);
 app.use('/subjects', subjectRouter);
 app.use('/auth', authRouter);
-app.use('/user', userRouter);
 app.use('/firstAccess', firstAccessRouter);
+app.use('/users', userRouter);
+
 
 export default app;

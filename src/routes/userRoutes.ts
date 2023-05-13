@@ -10,5 +10,7 @@ userRouter.post('/', userController.store);
 userRouter.get('/:id', authMiddleware, userController.show);
 userRouter.put('/:id', authMiddleware, userController.update);
 userRouter.delete('/:id', authMiddleware, userController.delete);
+userRouter.post('/recovery_email', userController.sendRecoveryPasswordEmail);
+userRouter.post('/recovery_password', userController.recoveryPassword);
 
 export { userRouter };

@@ -37,10 +37,29 @@ interface IMailOptions {
   text: string;
   context: {
     subject: string;
-    name: string;
-    link: string;
-    password: string;
+    name?: string;
+    link?: string;
+    password?: string;
   };
 }
 
-export { IMailOptions, transporter };
+interface ProjectIMailOptions {
+  to: string[];
+  from: string;
+  subject: string;
+  template: string;
+  context: {
+    title: string,
+    student: {
+      name: string,
+      last_name: string
+    },
+    teacher: {
+      name: string,
+      last_name: string
+    },
+    link: string;
+  }
+}
+
+export { IMailOptions, ProjectIMailOptions, transporter };

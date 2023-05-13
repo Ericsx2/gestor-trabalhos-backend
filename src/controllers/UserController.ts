@@ -67,15 +67,15 @@ class UserController {
 
     const mailOptions: IMailOptions = {
       to: email,
-      from: `Recovery Password <${process.env.SMTP_USER}>`,
-      subject: 'Recovery Password',
-      text: `Olá ${name}, essa é a sua senha temporária ${hashedPassword}, para alterar entre no link`,
-      template: 'recuperar_senha',
+      from: `COLCIC <${process.env.SMTP_USER}>`,
+      subject: 'Primeiro Acesso',
+      text: `Olá ${name}, essa é a sua senha temporária ${generatedPassword}, para alterar entre no link`,
+      template: 'first_access',
       context: {
-        subject: 'Recovery Password',
+        subject: 'Primeiro Acesso',
         name,
-        link: 'https://www.youtube.com/watch?v=5-qbpf17lz8&t=12s',
-        password: hashedPassword,
+        link: 'https://www.google.com',
+        password: generatedPassword,
       },
     };
 
@@ -154,6 +154,62 @@ class UserController {
     });
 
     return response.send({ message: 'usuário deletado com sucesso' });
+  }
+
+  async sendRecoveryPasswordEmail(request: Request, response: Response) {
+    const { email, name } = request.body;
+
+    const mailOptions: IMailOptions = {
+      to: email,
+      from: `<${process.env.SMTP_USER}>`,
+      subject: 'Recuperação de Senha',
+      text: `Olá ${name}, Segue abaixo o link para recuperação de senha`,
+      template: 'recovery_password',
+      context: {
+        subject: 'Primeiro Acesso',
+        name,
+        link: 'https://www.google.com',
+      },
+    };
+
+    await transporter.sendMail(mailOptions).catch((error) => {
+      if (error) {
+        return response
+          .status(500)
+          .send({ message: 'Erro ao enviar email', error });
+      }
+    });
+
+    return response.send();
+  }
+
+  async recoveryPassword(request: Request, response: Response) {
+    const { id } = request.params;
+    const { password } = request.body;
+
+    const user = prismaClient.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) {
+      return response.status(404).send({ message: 'Usuário não encontrado' });
+    }
+
+    const salt = genSaltSync(10);
+    const hashedPassword = hashSync(password, salt);
+
+    const updatedUser = await prismaClient.user.update({
+      data: {
+        password: hashedPassword,
+      },
+      where: {
+        id,
+      },
+    });
+
+    return response.send({ message: 'Senha Alterada com sucesso' });
   }
 }
 
