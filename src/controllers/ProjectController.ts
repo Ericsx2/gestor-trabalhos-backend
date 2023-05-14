@@ -72,14 +72,18 @@ class ProjectController {
       },
     });
 
+    const link = `http://127.0.0.1:3333/projects/${project.id}`;
+
     const mailOptions: ProjectIMailOptions = {
       to: [student.email, teacher.email],
       from: `${process.env.SMTP_USER}`,
       subject: 'Seu projeto foi criado com sucesso!',
       template: 'project_created',
+      text: `Seu trabalho foi adicionado\nDocente: ${teacher.name} ${teacher.last_name}\n
+            Discente: ${student.name} ${student.last_name}\nVeja seu projeto em: ${link}`,
       context: {
         title,
-        link: `http://127.0.0.1:3333/projects/${project.id}`,
+        link,
         student: {
           name: student.name,
           last_name: student.last_name,

@@ -6,7 +6,7 @@ import path from 'path';
 const transporter = createTransport({
   host: process.env.SMTP_HOST,
   port: process.env.SMTP_PORT,
-  secure: process.env.SMTP_SECURE,
+  secure: process.env.SMTP_SECURE || false,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
@@ -21,7 +21,7 @@ transporter.use(
   hbs({
     viewEngine: {
       extname: '.hbs',
-      partialsDir: path.resolve(__dirname, '../resources/mail'),
+      partialsDir: path.resolve(__dirname, '../resources/partials'),
       defaultLayout: undefined,
     },
     viewPath: path.resolve(__dirname, '../resources/mail'),
@@ -48,18 +48,19 @@ interface ProjectIMailOptions {
   from: string;
   subject: string;
   template: string;
+  text: string;
   context: {
-    title: string,
+    title: string;
     student: {
-      name: string,
-      last_name: string
-    },
+      name: string;
+      last_name: string;
+    };
     teacher: {
-      name: string,
-      last_name: string
-    },
+      name: string;
+      last_name: string;
+    };
     link: string;
-  }
+  };
 }
 
 export { IMailOptions, ProjectIMailOptions, transporter };
