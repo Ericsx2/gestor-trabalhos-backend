@@ -6,7 +6,7 @@ import path from 'path';
 const transporter = createTransport({
   host: process.env.SMTP_HOST,
   port: process.env.SMTP_PORT,
-  secure: process.env.SMTP_SECURE,
+  secure: process.env.SMTP_SECURE || false,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
@@ -49,17 +49,17 @@ interface ProjectIMailOptions {
   subject: string;
   template: string;
   context: {
-    title: string,
+    title: string;
     student: {
-      name: string,
-      last_name: string
-    },
+      name: string;
+      last_name: string;
+    };
     teacher: {
-      name: string,
-      last_name: string
-    },
+      name: string;
+      last_name: string;
+    };
     link: string;
-  }
+  };
 }
 
 export { IMailOptions, ProjectIMailOptions, transporter };
