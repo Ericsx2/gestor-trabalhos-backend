@@ -26,7 +26,7 @@ function adminAuthMiddleware(
   try {
     const data = jwt.verify(token, process.env.JWT_SECRET as string);
 
-    const { id, name, email, role } = data as TokenPayload;
+    const { role } = data as TokenPayload;
     
     if(role == "Admin") {
       return next();

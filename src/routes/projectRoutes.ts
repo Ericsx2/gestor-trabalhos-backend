@@ -8,10 +8,10 @@ import adminAuthMiddleware from '../middlewares/adminAuthMiddleware';
 const projectRouter = Router();
 const projectController = new ProjectController();
 
-projectRouter.get('/', projectController.index);
-projectRouter.post('/', adminAuthMiddleware, uploads.single('project_pdf'), projectController.store);
-projectRouter.get('/:id', projectController.show);
-projectRouter.put('/:id', authMiddleware, projectController.update);
-projectRouter.delete('/:id', adminAuthMiddleware, projectController.delete);
+projectRouter.get('/', [ authMiddleware, adminAuthMiddleware ], projectController.index);
+projectRouter.post('/', [ authMiddleware, adminAuthMiddleware ], uploads.single('project_pdf'), projectController.store);
+projectRouter.get('/:id', [ authMiddleware, adminAuthMiddleware ], projectController.show);
+projectRouter.put('/:id', [ authMiddleware, adminAuthMiddleware ], projectController.update);
+projectRouter.delete('/:id', [ authMiddleware, adminAuthMiddleware ], projectController.delete);
 
 export { projectRouter };

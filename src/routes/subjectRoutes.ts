@@ -6,10 +6,10 @@ import adminAuthMiddleware from '../middlewares/adminAuthMiddleware';
 const subjectRouter = Router();
 const subjectController = new SubjectController();
 
-subjectRouter.get('/', subjectController.index);
-subjectRouter.post('/', adminAuthMiddleware, subjectController.store);
-subjectRouter.get('/:id', subjectController.show);
-subjectRouter.put('/:id', adminAuthMiddleware,subjectController.update);
-subjectRouter.delete('/:id', adminAuthMiddleware, subjectController.delete);
+subjectRouter.get('/', [ authMiddleware, adminAuthMiddleware ], subjectController.index);
+subjectRouter.post('/', [ authMiddleware, adminAuthMiddleware ], subjectController.store);
+subjectRouter.get('/:id', [ authMiddleware, adminAuthMiddleware ], subjectController.show);
+subjectRouter.put('/:id', [ authMiddleware, adminAuthMiddleware ],subjectController.update);
+subjectRouter.delete('/:id', [ authMiddleware, adminAuthMiddleware ], subjectController.delete);
 
 export { subjectRouter };
