@@ -22,4 +22,15 @@ projectRouter.delete(
   projectController.delete
 );
 
+projectRouter.post(
+  '/approve',
+  [authMiddleware, adminMiddleware],
+  projectController.approve
+);
+projectRouter.post(
+  '/reject',
+  [authMiddleware, adminMiddleware],
+  projectController.reject
+);
+
 export { projectRouter };
