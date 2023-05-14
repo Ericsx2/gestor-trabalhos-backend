@@ -16,41 +16,6 @@ enum ROLE {
   Admin
 }
 
-model RegistrationRequest{
-  id           String  @id @default(uuid())
-  registration String  @unique @db.VarChar(10)
-  was_created  Boolean @default(false)
-  
-  
-  created_at DateTime          @default(now())
-
-  @@map("registration_requests")
-}
-
-model Project {
-  id          String  @id @default(uuid())
-  title       String  @db.VarChar(255)
-  description String  @db.Text
-  subject     Subject @relation(fields: [subjectId], references: [id])
-  subjectId   String
-
-  created_at DateTime          @default(now())
-  Users      UsersOnProjects[]
-
-  @@map("projects")
-}
-
-model Subject {
-  id         String    @id @default(uuid())
-  name       String    @db.VarChar(50)
-  code       String    @db.VarChar(10)
-  created_at DateTime  @default(now())
-  deleted    Boolean   @default(false)
-  projects   Project[]
-
-  @@map("subjects")
-}
-
 model User {
   id           String            @id @default(uuid())
   name         String            @db.VarChar(50)
@@ -66,6 +31,30 @@ model User {
   @@map("users")
 }
 
+model Subject {
+  id         String    @id @default(uuid())
+  name       String    @db.VarChar(50)
+  code       String    @db.VarChar(10)
+  created_at DateTime  @default(now())
+  deleted    Boolean   @default(false)
+  projects   Project[]
+
+  @@map("subjects")
+}
+
+model Project {
+  id          String  @id @default(uuid())
+  title       String  @db.VarChar(255)
+  description String  @db.Text
+  subject     Subject @relation(fields: [subjectId], references: [id])
+  subjectId   String
+
+  created_at DateTime          @default(now())
+  Users      UsersOnProjects[]
+
+  @@map("projects")
+}
+
 model UsersOnProjects {
   project   Project @relation(fields: [projectId], references: [id])
   projectId String
@@ -73,4 +62,13 @@ model UsersOnProjects {
   userId    String
 
   @@id([projectId, userId])
+}
+
+model RegistrationRequest {
+  id           String   @id @default(uuid())
+  registration String   @unique @db.VarChar(10)
+  was_created  Boolean  @default(false)
+  created_at   DateTime @default(now())
+
+  @@map("registration_requests")
 }
