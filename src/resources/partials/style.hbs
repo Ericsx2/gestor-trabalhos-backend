@@ -1,0 +1,82 @@
+  <style>
+    :root {
+      --color-primary: #294273;
+      --color-secondary: #DAE6F7;
+      --color-terciary: #F2E63D;
+      --color-quaternary: #F2CB05;
+      --bg-text-light: white;
+      --bg-text-dark: black;
+
+      --text-color-light: black;
+      --text-color-dark: white;
+    }
+
+    body {
+      margin: 0;
+    }
+
+    header,
+    main,
+    footer {
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      color: var(--text-color-light);
+    }
+
+    header,
+    footer {
+      color: var(--text-color-light);
+    }
+
+    header {
+      border-bottom: 5px solid var(--color-primary);
+    }
+
+    footer {
+      border-top: 5px solid var(--color-primary);
+    }
+
+    main {
+      padding: 20px 0
+    }
+
+    header {
+      background-color: var(--color-secondary);
+    }
+
+    header>.logo {
+      background-color: var(--color-secondary);
+      padding: 20px 0;
+    }
+
+    header>.logo>img {
+      height: 80px;
+    }
+
+    header>.title {
+      background-color: var(--bg-text-light);
+      color: var(--text-color-light);
+    }
+
+    header>.title {
+      padding: 10px 0;
+    }
+
+    main {
+      background-color: var(--bg-text-light);
+    }
+
+    footer {
+      background-color: var(--color-secondary);
+      padding: 35px 0 35px 0;
+    }
+
+    footer>p {
+      margin: 0;
+      padding: 2px;
+    }
+  </style>
+</head>
+<body>

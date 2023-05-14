@@ -21,7 +21,7 @@ transporter.use(
   hbs({
     viewEngine: {
       extname: '.hbs',
-      partialsDir: path.resolve(__dirname, '../resources/mail'),
+      partialsDir: path.resolve(__dirname, '../resources/partials'),
       defaultLayout: undefined,
     },
     viewPath: path.resolve(__dirname, '../resources/mail'),

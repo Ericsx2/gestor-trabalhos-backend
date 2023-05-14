@@ -1,14 +1,12 @@
-<html lang='pt-br'>
-  <head>
-    <meta charset='UTF-8' />
-    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-    <title>{{subject}}</title>
-  </head>
-  <body>
-    <h1>Olá, {{name}}!</h1>
-    <p>Essa é sua senha temporária: {{password}}</p>
-    <p>Para caso queira alterar, clique aqui:
-      <a href='{{link}}'>Change Password</a></p>
-  </body>
-</html>
+{{> head}}
+{{> style}}
+    {{> header}}
+    <main>
+      <div class="title">
+        <h1>Seu cadastro foi realizado</h1>
+      </div>
+      <h3>Olá, {{name}}!</h3>
+      <p>Essa é sua senha temporária: {{password}}</p>
+      <p>Para alterar <a href='{{link}}'>clique aqui</a></p>
+    </main>
+{{> footer}}
