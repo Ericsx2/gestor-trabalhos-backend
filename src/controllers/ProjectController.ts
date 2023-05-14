@@ -87,8 +87,8 @@ class ProjectController {
         teacher: {
           name: teacher.name,
           last_name: teacher.last_name,
-        }
-      }
+        },
+      },
     };
 
     await transporter.sendMail(mailOptions).catch((error) => {
@@ -212,6 +212,36 @@ class ProjectController {
     return response
       .status(200)
       .json({ message: 'Projeto deletado com sucesso' });
+  }
+
+  async approve(request: Request, response: Response) {
+    const { id } = request.body;
+    const project = await prismaClient.project.findUnique({
+      where: { id },
+    });
+
+    if (!project) {
+      return response.status(404).send({ message: 'Projeto não encontrado' });
+    }
+
+    const approvedProject = await prismaClient.project.update({
+      data: {
+        accepted: true,
+      },
+      where: { id },
+    });
+
+    return response.send();
+  }
+
+  async reject(request: Request, response: Response) {
+    const { id } = request.body;
+
+    await prismaClient.project.delete({
+      where: { id },
+    });
+
+    return response.send();
   }
 }
 
