@@ -48,6 +48,7 @@ interface ProjectIMailOptions {
   from: string;
   subject: string;
   template: string;
+  text: string;
   context: {
     title: string;
     student: {

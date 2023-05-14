@@ -38,14 +38,15 @@ class UserController {
       return response.status(302).send({ message: 'Matrícula já existente!' });
     }
 
-    const registrationRequestUpdated = await prismaClient.registrationRequest.update({
-      data: {
-        was_created: true
-      },
-      where: {
-        registration
-      }
-    });
+    const registrationRequestUpdated =
+      await prismaClient.registrationRequest.update({
+        data: {
+          was_created: true,
+        },
+        where: {
+          registration,
+        },
+      });
 
     const salt = genSaltSync(10);
     const generatedPassword = generate({
@@ -65,16 +66,18 @@ class UserController {
       },
     });
 
+    const link = 'http://127.0.0.1:3333/user/546218/changePassword';
+
     const mailOptions: IMailOptions = {
       to: email,
       from: `COLCIC <${process.env.SMTP_USER}>`,
       subject: 'Primeiro Acesso',
-      text: `Olá ${name}, essa é a sua senha temporária ${generatedPassword}, para alterar entre no link`,
+      text: `Olá ${name}, essa é a sua senha provisória: ${generatedPassword}\nAltere em: ${link}`,
       template: 'first_access',
       context: {
         subject: 'Primeiro Acesso',
         name,
-        link: 'https://www.google.com',
+        link,
         password: generatedPassword,
       },
     };
@@ -159,16 +162,18 @@ class UserController {
   async sendRecoveryPasswordEmail(request: Request, response: Response) {
     const { email, name } = request.body;
 
+    const link = 'http://127.0.0.1:3333/user/546218/changePassword';
+
     const mailOptions: IMailOptions = {
       to: email,
       from: `<${process.env.SMTP_USER}>`,
       subject: 'Recuperação de Senha',
-      text: `Olá ${name}, Segue abaixo o link para recuperação de senha`,
+      text: `Olá ${name}, você solicitou alteração de senha\nAltere em: ${link}`,
       template: 'recovery_password',
       context: {
-        subject: 'Primeiro Acesso',
+        subject: 'Recuperação de Senha',
         name,
-        link: 'https://www.google.com',
+        link,
       },
     };
 
