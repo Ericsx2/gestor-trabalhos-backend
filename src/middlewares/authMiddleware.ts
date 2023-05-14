@@ -2,9 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 interface TokenPayload {
-  id: string;
-  name: string;
-  email: string;
+  role: string;
   iat: number;
   exp: number;
 }
@@ -25,7 +23,9 @@ function authMiddleware(
   try {
     const data = jwt.verify(token, process.env.JWT_SECRET as string);
 
-    const { id, name, email } = data as TokenPayload;
+    const { role } = data as TokenPayload;
+
+    request.body = { ...request.body, role };
 
     return next();
   } catch (err) {

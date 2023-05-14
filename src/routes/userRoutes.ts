@@ -1,16 +1,25 @@
 import { Router } from 'express';
 import { UserController } from '../controllers/UserController';
 import authMiddleware from '../middlewares/authMiddleware';
+import adminMiddleware from '../middlewares/adminMiddleware';
 
 const userRouter = Router();
 const userController = new UserController();
 
-userRouter.get('/', userController.index);
-userRouter.post('/', userController.store);
+userRouter.get('/', [authMiddleware, adminMiddleware], userController.index);
+userRouter.post('/', [authMiddleware, adminMiddleware], userController.store);
 userRouter.get('/:id', authMiddleware, userController.show);
 userRouter.put('/:id', authMiddleware, userController.update);
 userRouter.delete('/:id', authMiddleware, userController.delete);
-userRouter.post('/recovery_email', userController.sendRecoveryPasswordEmail);
-userRouter.post('/recovery_password', userController.recoveryPassword);
+userRouter.post(
+  '/recovery_email',
+  authMiddleware,
+  userController.sendRecoveryPasswordEmail
+);
+userRouter.post(
+  '/recovery_password',
+  authMiddleware,
+  userController.recoveryPassword
+);
 
 export { userRouter };
