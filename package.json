@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --exit-child --files src/server.ts",
     "build": "tsup",
-    "prod": "node dist/server.js"
+    "prod": "node dist/server.js",
+    "db:seed": "ts-node-dev src/database/seeders/index.ts"
   },
   "dependencies": {
     "@prisma/client": "^4.12.0",
@@ -23,6 +24,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.0.1",
     "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.13",
     "@types/dotenv": "^8.2.0",
