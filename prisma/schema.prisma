@@ -50,8 +50,9 @@ model Project {
   subjectId   String
   accepted    Boolean @default(false)
 
-  created_at DateTime          @default(now())
-  Users      UsersOnProjects[]
+  created_at  DateTime          @default(now())
+  Users       UsersOnProjects[]
+  ProjectFile ProjectFile[]
 
   @@map("projects")
 }
@@ -72,4 +73,14 @@ model RegistrationRequest {
   created_at   DateTime @default(now())
 
   @@map("registration_requests")
+}
+
+model ProjectFile {
+  id        String  @id @default(uuid())
+  name      String
+  url       String
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id])
+
+  @@map("project_files")
 }
