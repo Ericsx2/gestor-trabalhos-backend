@@ -25,5 +25,5 @@ async function createUsers(length: number) {
 }
 
 export default async function userSeeder() {
-  await createUsers(10);
+  await createUsers(30);
 }

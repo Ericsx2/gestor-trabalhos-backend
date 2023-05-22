@@ -2,10 +2,10 @@ import projectSeeder from './Project';
 import subjectSeeder from './Subject';
 import userSeeder from './User';
 
-function seed() {
-  userSeeder();
-  subjectSeeder();
-  projectSeeder();
+async function seed() {
+  await userSeeder();
+  await subjectSeeder();
+  await projectSeeder();
 }
 
 seed();
