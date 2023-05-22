@@ -20,7 +20,9 @@ async function createUsers(length: number) {
         deleted: false,
       },
     });
-    console.log(`email: ${user.email}, password: ${password}`);
+    console.log(
+      `email: ${user.email}, password: ${password}, role: ${user.role}`
+    );
   }
 }
 
