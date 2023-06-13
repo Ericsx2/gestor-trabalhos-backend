@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "engines": {
+    "node": "20"
+  },
   "scripts": {
     "dev": "ts-node-dev --respawn --exit-child --files src/server.ts",
     "build": "tsup",
