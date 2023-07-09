@@ -3,10 +3,13 @@ import { prismaClient } from '../database/prismaClient';
 import { generate } from 'generate-password';
 import { genSaltSync, hashSync } from 'bcrypt';
 import { IMailOptions, transporter } from '../modules/SendEmailModule';
+import jwt from 'jsonwebtoken';
 
 class UserController {
   async index(request: Request, response: Response) {
-    const { page, offset } = request.query;
+    const { page } = request.query;
+    const offset = 10;
+
     const rowsPerPage = Number(offset);
     try {
       const users = await prismaClient.user.findMany({
@@ -20,7 +23,8 @@ class UserController {
       const usersCount = await prismaClient.user.count();
 
       return response.send({ users, count: usersCount });
-    } catch {
+    } catch(error) {
+      console.log(error);
       return response.status(500).send();
     }
   }
@@ -104,8 +108,8 @@ class UserController {
       });
 
       return response.send({ message: 'Usuário criado com sucesso' });
-    } catch {
-      return response.status(500).send();
+    } catch(error) {
+      return response.status(500).send({message: error});
     }
   }
 
@@ -149,6 +153,10 @@ class UserController {
 
       if (!user) {
         return response.status(404).send({ message: 'Usuário não encontrado' });
+      }
+
+      if(id != user.id){
+        return response.status(404).send({ message: 'Usuário não possui permissão.' });
       }
 
       const userUpdated = await prismaClient.user.update({

@@ -11,9 +11,11 @@ const storage = diskStorage({
     );
 
     const salt = genSaltSync(10);
-    const hashedPassword = hashSync(file.originalname, salt);
+    const hashedName = hashSync(file.originalname, salt);
 
-    cb(null, hashedPassword.substring(0, 29) + extensionFile);
+    cb(null, hashedName.substring(0, 29) + extensionFile);
+
+    return hashedName;
   },
 });
 

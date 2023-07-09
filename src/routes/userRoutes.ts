@@ -10,7 +10,7 @@ userRouter.get('/', [authMiddleware, adminMiddleware], userController.index);
 userRouter.post('/', [authMiddleware, adminMiddleware], userController.store);
 userRouter.get('/:id', authMiddleware, userController.show);
 userRouter.put('/:id', authMiddleware, userController.update);
-userRouter.delete('/:id', authMiddleware, userController.delete);
+userRouter.delete('/:id',[authMiddleware, adminMiddleware], userController.delete);
 userRouter.post(
   '/recovery_email',
   authMiddleware,

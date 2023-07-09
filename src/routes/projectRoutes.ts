@@ -3,6 +3,7 @@ import { ProjectController } from '../controllers/ProjectController';
 import uploads from '../modules/UploadFileModule';
 import authMiddleware from '../middlewares/authMiddleware';
 import adminMiddleware from '../middlewares/adminMiddleware';
+import teacherMiddleware from '../middlewares/TeacherMiddleware';
 
 const projectRouter = Router();
 const projectController = new ProjectController();
@@ -10,15 +11,15 @@ const projectController = new ProjectController();
 projectRouter.get('/', [authMiddleware], projectController.index);
 projectRouter.post(
   '/',
-  [authMiddleware],
-  uploads.single('project_pdf'),
+  authMiddleware,
+  uploads.array("project_files"),
   projectController.store
 );
 projectRouter.get('/:id', [authMiddleware], projectController.show);
-projectRouter.put('/:id', [authMiddleware], projectController.update);
+projectRouter.put('/:id', [authMiddleware,teacherMiddleware, adminMiddleware], projectController.update);
 projectRouter.delete(
   '/:id',
-  [authMiddleware, adminMiddleware],
+  [authMiddleware,teacherMiddleware, adminMiddleware],
   projectController.delete
 );
 

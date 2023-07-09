@@ -4,7 +4,9 @@ import { ProjectIMailOptions, transporter } from '../modules/SendEmailModule';
 
 class ProjectController {
   async index(request: Request, response: Response) {
-    const { page, offset } = request.query;
+    const { page } = request.query;
+    const offset = 10;
+    
     const rowsPerPage = Number(offset);
     try {
       const projects = await prismaClient.project.findMany({
@@ -24,9 +26,10 @@ class ProjectController {
       description,
       registration_teacher,
       registration_student,
-      registration_subject,
+      owner
     } = request.body;
 
+    /*
     try {
       const student = await prismaClient.user.findFirst({
         where: {
@@ -52,23 +55,11 @@ class ProjectController {
           .json({ message: 'Professor não foi encontrado!' });
       }
 
-      const subject = await prismaClient.subject.findFirst({
-        where: {
-          code: registration_subject,
-        },
-      });
-
-      if (!subject) {
-        return response
-          .status(404)
-          .json({ message: 'Matéria não foi encontrada!' });
-      }
-
       const project = await prismaClient.project.create({
         data: {
           title,
           description,
-          subjectId: subject.id,
+          owner,
           Users: {
             create: [
               {
@@ -114,9 +105,11 @@ class ProjectController {
       });
 
       return response.send({ message: 'Projeto criado com sucesso' });
+      
     } catch {
       return response.status(500).send();
     }
+    */
   }
 
   async show(request: Request, response: Response) {
@@ -149,6 +142,7 @@ class ProjectController {
       registration_teacher,
       registration_student,
       registration_subject,
+      owner
     } = request.body;
 
     try {
@@ -188,22 +182,11 @@ class ProjectController {
           .json({ message: 'Professor não foi encontrado!' });
       }
 
-      const subject = await prismaClient.subject.findFirst({
-        where: {
-          code: registration_subject,
-        },
-      });
-
-      if (!subject) {
-        return response
-          .status(404)
-          .json({ message: 'Matéria não foi encontrada!' });
-      }
-
       const project = await prismaClient.project.update({
         data: {
           title,
           description,
+          owner,
           Users: {
             create: [
               {
