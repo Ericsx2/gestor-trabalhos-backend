@@ -15,7 +15,7 @@ class FirstAccessController {
       if (registrationAlreadyExists) {
         return response
           .status(302)
-          .send({ message: 'Matrícula já existente!' });
+          .send({ message: 'Você já fez a solicitação! Aguarde o email do colegiado com suas informações de primeiro acesso.' });
       }
 
       const registration_requests =

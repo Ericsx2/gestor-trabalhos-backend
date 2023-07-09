@@ -24,6 +24,7 @@ function authMiddleware(
     const data = jwt.verify(token, process.env.JWT_SECRET as string);
 
     const { role } = data as TokenPayload;
+    console.log(request.params);
 
     request.body = { ...request.body, role };
 

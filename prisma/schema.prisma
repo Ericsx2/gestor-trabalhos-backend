@@ -31,25 +31,12 @@ model User {
   @@map("users")
 }
 
-model Subject {
-  id         String    @id @default(uuid())
-  name       String    @db.VarChar(50)
-  code       String    @db.VarChar(10)
-  created_at DateTime  @default(now())
-  deleted    Boolean   @default(false)
-  projects   Project[]
-
-  @@map("subjects")
-}
-
 model Project {
   id          String  @id @default(uuid())
   title       String  @db.VarChar(255)
   description String  @db.Text
-  subject     Subject @relation(fields: [subjectId], references: [id])
-  subjectId   String
   accepted    Boolean @default(false)
-
+  owner       String
   created_at  DateTime          @default(now())
   Users       UsersOnProjects[]
   ProjectFile ProjectFile[]

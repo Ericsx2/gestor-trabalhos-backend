@@ -2,9 +2,10 @@ import { Request, Response } from 'express';
 import { prismaClient } from '../database/prismaClient';
 import { compareSync } from 'bcrypt';
 import jwt from 'jsonwebtoken';
+require('dotenv').config();
 
 class AuthController {
-  async auth(request: Request, response: Response) {
+  async login(request: Request, response: Response) {
     const { email, password } = request.body;
 
     try {
@@ -36,12 +37,12 @@ class AuthController {
           role: user.role,
         },
         process.env.JWT_SECRET as string,
-        { expiresIn: '24h' }
+        { expiresIn: '87min' }
       );
 
       return response.send({ token });
-    } catch {
-      return response.status(500).send();
+    } catch(error){
+      return response.status(500).send(error);
     }
   }
 }
