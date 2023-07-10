@@ -20,6 +20,42 @@ class ProjectController {
     }
   }
 
+  async recents(request: Request, response: Response) {
+    try{
+      const projects = await prismaClient.project.findMany({
+        take: 5,
+      });
+
+      return response.status(200).json(projects);
+    } catch {
+      return response.status(500).send();
+    }
+  }
+
+  async search(request: Request, response: Response) {
+    const { search } = request.query;
+
+    try {
+      const project = await prismaClient.project.findMany({
+        where: {
+          title: {
+            contains: search as string
+          },
+        },
+      });
+
+      if (!project) {
+        return response.status(404).send({ message: 'Projeto não encontrado' });
+      }
+
+      return response.status(200).json({
+        project,
+      });
+    } catch {
+      return response.status(500).send();
+    }
+  }
+
   async store(request: Request, response: Response) {
     const {
       title,
@@ -29,8 +65,19 @@ class ProjectController {
       owner
     } = request.body;
 
-    /*
     try {
+      const projectAlreadyExists = await prismaClient.project.findFirst({
+        where: {
+          title,
+        },
+      });
+
+      if (projectAlreadyExists) {
+        return response
+          .status(404)
+          .json({ message: 'Projeto com esse título já foi cadastrado!' });
+      }
+
       const student = await prismaClient.user.findFirst({
         where: {
           registration: registration_student,
@@ -55,6 +102,9 @@ class ProjectController {
           .json({ message: 'Professor não foi encontrado!' });
       }
 
+      
+
+
       const project = await prismaClient.project.create({
         data: {
           title,
@@ -71,6 +121,29 @@ class ProjectController {
             ],
           },
         },
+      });
+
+      const banner = request.files['banner'][0];
+      const project_file = request.files['project_file'][0];
+
+      const project_files = await prismaClient.projectFile.create({
+        data:{
+          name: project.title,
+          url: project_file.path,
+          projectId: project.id,
+          type: project_file.fieldname
+        }
+      });
+
+
+      const banner_file = await prismaClient.projectFile.create({
+        data:{
+          name: project.title,
+          url: banner.path,
+          projectId: project.id,
+          type: banner.fieldname
+        }
+        
       });
 
       const link = `http://127.0.0.1:3333/projects/${project.id}`;
@@ -103,13 +176,13 @@ class ProjectController {
             .send({ message: 'Erro ao enviar email', error });
         }
       });
-
+      
+      
       return response.send({ message: 'Projeto criado com sucesso' });
       
-    } catch {
-      return response.status(500).send();
+    } catch(error){
+      return response.status(500).send({message: error});
     }
-    */
   }
 
   async show(request: Request, response: Response) {

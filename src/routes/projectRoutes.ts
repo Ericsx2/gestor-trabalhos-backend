@@ -11,8 +11,8 @@ const projectController = new ProjectController();
 projectRouter.get('/', [authMiddleware], projectController.index);
 projectRouter.post(
   '/',
-  authMiddleware,
-  uploads.array("project_files"),
+  [authMiddleware, adminMiddleware],
+  uploads.fields([{ name: 'banner', maxCount: 1 }, { name: 'project_file', maxCount: 1 }]),
   projectController.store
 );
 projectRouter.get('/:id', [authMiddleware], projectController.show);
@@ -33,5 +33,8 @@ projectRouter.post(
   [authMiddleware, adminMiddleware],
   projectController.reject
 );
+
+projectRouter.get('/search', projectController.search);
+projectRouter.get('/recents', projectController.recents);
 
 export { projectRouter };
