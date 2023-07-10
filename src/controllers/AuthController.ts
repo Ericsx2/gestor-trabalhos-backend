@@ -40,7 +40,13 @@ class AuthController {
         { expiresIn: '87min' }
       );
 
-      return response.send({ token });
+      return response.send({ user:
+        {
+          id: user.id,
+          name: user.name,
+          role: user.role,
+        },
+        token });
     } catch(error){
       return response.status(500).send(error);
     }

@@ -8,7 +8,7 @@ function authMiddleware(
   const { role } = request.body;
 
   if (role !== 'Teacher') {
-    return response.status(403).send({ message: 'Usuário sem permissão' });
+    return response.status(403).send({ message: 'Usuário2 sem permissão' });
   }
 
   next();

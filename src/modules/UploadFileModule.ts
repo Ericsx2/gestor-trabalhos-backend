@@ -6,14 +6,14 @@ const storage = diskStorage({
     cb(null, 'src/uploads/');
   },
   filename: function (req, file, cb) {
-    const extensionFile = file.originalname.slice(
-      file.originalname.lastIndexOf('.')
-    );
+    const extensionFile = file.originalname.split(
+      '.'
+    )[1];
 
     const salt = genSaltSync(10);
     const hashedName = hashSync(file.originalname, salt);
 
-    cb(null, hashedName.substring(0, 29) + extensionFile);
+    cb(null, hashedName.substring(0, 20) +'.'+ extensionFile);
 
     return hashedName;
   },

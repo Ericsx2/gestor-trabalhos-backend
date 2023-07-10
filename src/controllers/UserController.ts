@@ -3,7 +3,6 @@ import { prismaClient } from '../database/prismaClient';
 import { generate } from 'generate-password';
 import { genSaltSync, hashSync } from 'bcrypt';
 import { IMailOptions, transporter } from '../modules/SendEmailModule';
-import jwt from 'jsonwebtoken';
 
 class UserController {
   async index(request: Request, response: Response) {
@@ -30,7 +29,7 @@ class UserController {
   }
 
   async store(request: Request, response: Response) {
-    const { name, last_name, registration, email } = request.body;
+    const { name, last_name, registration, email, role } = request.body;
 
     try {
       const emailAlreadyExists = await prismaClient.user.findUnique({
@@ -80,6 +79,7 @@ class UserController {
           last_name,
           registration,
           password: hashedPassword,
+          role
         },
       });
 
