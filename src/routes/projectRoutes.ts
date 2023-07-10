@@ -11,15 +11,22 @@ const projectController = new ProjectController();
 projectRouter.get('/', [authMiddleware], projectController.index);
 projectRouter.post(
   '/',
-  [authMiddleware, adminMiddleware],
-  uploads.fields([{ name: 'banner', maxCount: 1 }, { name: 'project_file', maxCount: 1 }]),
+  [authMiddleware],
+  uploads.fields([
+    { name: 'banner', maxCount: 1 },
+    { name: 'project_file', maxCount: 1 },
+  ]),
   projectController.store
 );
-projectRouter.get('/:id', [authMiddleware], projectController.show);
-projectRouter.put('/:id', [authMiddleware,teacherMiddleware, adminMiddleware], projectController.update);
+projectRouter.get('/show/:id', [authMiddleware], projectController.show);
+projectRouter.put(
+  '/:id',
+  [authMiddleware, teacherMiddleware, adminMiddleware],
+  projectController.update
+);
 projectRouter.delete(
   '/:id',
-  [authMiddleware,teacherMiddleware, adminMiddleware],
+  [authMiddleware, teacherMiddleware, adminMiddleware],
   projectController.delete
 );
 
@@ -34,7 +41,8 @@ projectRouter.post(
   projectController.reject
 );
 
-projectRouter.get('/search', projectController.search);
-projectRouter.get('/recents', projectController.recents);
+projectRouter.get('/public/search', projectController.search);
+projectRouter.get('/public/show/:id', projectController.publicShow);
+projectRouter.get('/public/recents', projectController.recents);
 
 export { projectRouter };

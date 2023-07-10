@@ -6,13 +6,13 @@ import { IMailOptions, transporter } from '../modules/SendEmailModule';
 
 class UserController {
   async index(request: Request, response: Response) {
-    const { page } = request.query;
-    const offset = 10;
+    const { page, offset } = request.query;
 
-    const rowsPerPage = Number(offset);
+    const rowsPerPage = Number(offset) || 10;
+    const skip = Number(page) - 1 || 0;
     try {
       const users = await prismaClient.user.findMany({
-        skip: (Number(page) - 1) * rowsPerPage,
+        skip: skip * rowsPerPage,
         take: rowsPerPage,
         where: {
           deleted: false,
@@ -22,7 +22,7 @@ class UserController {
       const usersCount = await prismaClient.user.count();
 
       return response.send({ users, count: usersCount });
-    } catch(error) {
+    } catch (error) {
       console.log(error);
       return response.status(500).send();
     }
@@ -30,6 +30,7 @@ class UserController {
 
   async store(request: Request, response: Response) {
     const { name, last_name, registration, email, role } = request.body;
+    console.log(request.body);
 
     try {
       const emailAlreadyExists = await prismaClient.user.findUnique({
@@ -79,7 +80,7 @@ class UserController {
           last_name,
           registration,
           password: hashedPassword,
-          role
+          role,
         },
       });
 
@@ -108,8 +109,8 @@ class UserController {
       });
 
       return response.send({ message: 'Usuário criado com sucesso' });
-    } catch(error) {
-      return response.status(500).send({message: error});
+    } catch (error) {
+      return response.status(500).send({ message: error });
     }
   }
 
@@ -155,8 +156,10 @@ class UserController {
         return response.status(404).send({ message: 'Usuário não encontrado' });
       }
 
-      if(id != user.id){
-        return response.status(404).send({ message: 'Usuário não possui permissão.' });
+      if (id != user.id) {
+        return response
+          .status(404)
+          .send({ message: 'Usuário não possui permissão.' });
       }
 
       const userUpdated = await prismaClient.user.update({
@@ -254,6 +257,65 @@ class UserController {
 
       return response.send({ message: 'Senha Alterada com sucesso' });
     } catch {
+      return response.status(500).send();
+    }
+  }
+
+  async projects(request: Request, response: Response) {
+    const { id } = request.params;
+
+    try {
+      const user = await prismaClient.user.findFirst({
+        where: {
+          id: id as string,
+        },
+        include: {
+          Projects: {
+            include: {
+              project: true,
+            },
+          },
+        },
+      });
+
+      if (!user) {
+        return response.status(404).send({ message: 'Usuário não encontrado' });
+      }
+
+      const projects = user.Projects;
+
+      return response.send(projects);
+    } catch {
+      return response.status(500).send();
+    }
+  }
+
+  async requests(request: Request, response: Response) {
+    const requests = await prismaClient.registrationRequest.findMany();
+
+    return response.send(requests);
+  }
+
+  async teachers(request: Request, response: Response) {
+    try {
+      const users = await prismaClient.user.findMany({
+        where: {
+          deleted: false,
+          role: 'Teacher',
+        },
+      });
+
+      return response.send(
+        users.map((user) => {
+          return {
+            name: user.name,
+            last_name: user.last_name,
+            id: user.id,
+          };
+        })
+      );
+    } catch (error) {
+      console.log(error);
       return response.status(500).send();
     }
   }

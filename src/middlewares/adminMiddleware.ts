@@ -5,9 +5,9 @@ function authMiddleware(
   response: Response,
   next: NextFunction
 ) {
-  const { role } = request.body;
+  const { requestRole } = request.body;
 
-  if (role !== 'Admin') {
+  if (requestRole !== 'Admin') {
     return response.status(403).send({ message: 'Usuário sem permissão' });
   }
 

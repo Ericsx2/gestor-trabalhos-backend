@@ -6,7 +6,7 @@ class ProjectController {
   async index(request: Request, response: Response) {
     const { page } = request.query;
     const offset = 10;
-    
+
     const rowsPerPage = Number(offset);
     try {
       const projects = await prismaClient.project.findMany({
@@ -21,12 +21,22 @@ class ProjectController {
   }
 
   async recents(request: Request, response: Response) {
-    try{
+    try {
       const projects = await prismaClient.project.findMany({
         take: 5,
       });
 
-      return response.status(200).json(projects);
+      return response.status(200).json(
+        projects.map((project) => {
+          return {
+            id: project.id,
+            title: project.title,
+            description: project.description,
+            owner: project.owner,
+            created_at: project.created_at,
+          };
+        })
+      );
     } catch {
       return response.status(500).send();
     }
@@ -36,10 +46,47 @@ class ProjectController {
     const { search } = request.query;
 
     try {
-      const project = await prismaClient.project.findMany({
+      const projects = await prismaClient.project.findMany({
         where: {
           title: {
-            contains: search as string
+            contains: search as string,
+          },
+        },
+      });
+
+      return response.status(200).json(
+        projects.map((project) => {
+          return {
+            id: project.id,
+            title: project.title,
+            description: project.description,
+          };
+        })
+      );
+    } catch {
+      return response.status(500).send();
+    }
+  }
+
+  async publicShow(request: Request, response: Response) {
+    const { id } = request.params;
+
+    try {
+      const project = await prismaClient.project.findFirst({
+        where: {
+          id,
+        },
+        include: {
+          Users: {
+            include: {
+              user: {
+                select: {
+                  name: true,
+                  last_name: true,
+                  role: true,
+                },
+              },
+            },
           },
         },
       });
@@ -48,8 +95,21 @@ class ProjectController {
         return response.status(404).send({ message: 'Projeto não encontrado' });
       }
 
+      const teacher = project.Users.find(
+        (item) => item.user.role === 'Teacher'
+      );
+      const student = project.Users.find(
+        (item) => item.user.role === 'Student'
+      );
+
       return response.status(200).json({
-        project,
+        id: project.id,
+        title: project.title,
+        description: project.description,
+        owner: project.owner,
+        created_at: project.created_at,
+        teacher: `${teacher?.user.name} ${teacher?.user.last_name}`,
+        student: `${student?.user.name} ${student?.user.last_name}`,
       });
     } catch {
       return response.status(500).send();
@@ -62,8 +122,9 @@ class ProjectController {
       description,
       registration_teacher,
       registration_student,
-      owner
+      owner,
     } = request.body;
+    console.log(request.body);
 
     try {
       const projectAlreadyExists = await prismaClient.project.findFirst({
@@ -102,9 +163,6 @@ class ProjectController {
           .json({ message: 'Professor não foi encontrado!' });
       }
 
-      
-
-
       const project = await prismaClient.project.create({
         data: {
           title,
@@ -127,23 +185,21 @@ class ProjectController {
       const project_file = request.files['project_file'][0];
 
       const project_files = await prismaClient.projectFile.create({
-        data:{
+        data: {
           name: project.title,
           url: project_file.path,
           projectId: project.id,
-          type: project_file.fieldname
-        }
+          type: project_file.fieldname,
+        },
       });
 
-
       const banner_file = await prismaClient.projectFile.create({
-        data:{
+        data: {
           name: project.title,
           url: banner.path,
           projectId: project.id,
-          type: banner.fieldname
-        }
-        
+          type: banner.fieldname,
+        },
       });
 
       const link = `http://127.0.0.1:3333/projects/${project.id}`;
@@ -176,12 +232,11 @@ class ProjectController {
             .send({ message: 'Erro ao enviar email', error });
         }
       });
-      
-      
+
       return response.send({ message: 'Projeto criado com sucesso' });
-      
-    } catch(error){
-      return response.status(500).send({message: error});
+    } catch (error) {
+      console.log(error);
+      return response.status(500).send({ message: error });
     }
   }
 
@@ -215,7 +270,7 @@ class ProjectController {
       registration_teacher,
       registration_student,
       registration_subject,
-      owner
+      owner,
     } = request.body;
 
     try {
