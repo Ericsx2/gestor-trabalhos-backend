@@ -24,11 +24,7 @@ projectRouter.put(
   [authMiddleware, teacherMiddleware, adminMiddleware],
   projectController.update
 );
-projectRouter.delete(
-  '/:id',
-  [authMiddleware, teacherMiddleware, adminMiddleware],
-  projectController.delete
-);
+projectRouter.delete('/:id', [authMiddleware], projectController.delete);
 
 projectRouter.post(
   '/approve',

@@ -284,7 +284,7 @@ class UserController {
 
       const projects = user.Projects;
 
-      return response.send(projects);
+      return response.send(projects.map((project) => project.project));
     } catch {
       return response.status(500).send();
     }
@@ -310,7 +310,7 @@ class UserController {
           return {
             name: user.name,
             last_name: user.last_name,
-            id: user.id,
+            registration: user.registration,
           };
         })
       );

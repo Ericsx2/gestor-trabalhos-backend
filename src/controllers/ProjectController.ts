@@ -24,6 +24,9 @@ class ProjectController {
     try {
       const projects = await prismaClient.project.findMany({
         take: 5,
+        orderBy: {
+          created_at: 'desc',
+        },
       });
 
       return response.status(200).json(
@@ -181,6 +184,7 @@ class ProjectController {
         },
       });
 
+      console.log(request.files);
       const banner = request.files['banner'][0];
       const project_file = request.files['project_file'][0];
 
@@ -350,7 +354,8 @@ class ProjectController {
       return response
         .status(200)
         .json({ message: 'Projeto deletado com sucesso' });
-    } catch {
+    } catch (e) {
+      console.log(e);
       return response.status(500).send();
     }
   }
