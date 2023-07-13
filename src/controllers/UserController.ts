@@ -8,12 +8,12 @@ class UserController {
   async index(request: Request, response: Response) {
     const { page, offset } = request.query;
 
-    const rowsPerPage = Number(offset) || 10;
-    const skip = Number(page) - 1 || 0;
+    const take = Number(offset);
+    const skip = Number(page) - 1;
     try {
       const users = await prismaClient.user.findMany({
-        skip: skip * rowsPerPage,
-        take: rowsPerPage,
+        skip: skip * take || 0,
+        take: take || 10,
         where: {
           deleted: false,
         },
