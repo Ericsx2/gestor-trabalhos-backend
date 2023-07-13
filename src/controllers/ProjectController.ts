@@ -4,14 +4,14 @@ import { ProjectIMailOptions, transporter } from '../modules/SendEmailModule';
 
 class ProjectController {
   async index(request: Request, response: Response) {
-    const { page } = request.query;
-    const offset = 10;
+    const { page, offset } = request.query;
 
-    const rowsPerPage = Number(offset);
+    const take = Number(offset);
+    const skip = Number(page) - 1;
     try {
       const projects = await prismaClient.project.findMany({
-        skip: (Number(page) - 1) * rowsPerPage,
-        take: rowsPerPage,
+        skip: skip * take || 0,
+        take: take || 10,
       });
 
       return response.status(200).json(projects);
